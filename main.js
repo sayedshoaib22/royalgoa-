@@ -18,11 +18,23 @@ const vehicles = [
         type: 'car',
         category: 'Compact Hatchback',
         pricePerDay: 1500,
-        image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=800',
+        image: 'https://image2url.com/r2/default/images/1771085514586-f48442cc-255d-424b-8a86-bd933470a02e.jpeg',
         transmission: 'Automatic',
         fuel: 'Petrol',
         seats: 5,
-        features: ['Manual/Auto Available', 'Compact Design', 'Touchscreen', 'Reverse Sensors']
+        features: ['Auto Available', 'Compact Design', 'Touchscreen', 'Reverse Sensors']
+    },
+    {
+        id: 'ignis',
+        name: 'Maruti Ignis',
+        type: 'car',
+        category: 'Compact Hatchback',
+        pricePerDay: 1500,
+        image: 'https://image2url.com/r2/default/images/1771085703961-71ea43b9-14f6-452a-a93d-1d8b86afdd50.jpeg',
+        transmission: 'Manual',
+        fuel: 'Petrol',
+        seats: 5,
+        features: ['Manual Available', 'Compact Design', 'Touchscreen', 'Reverse Sensors']
     },
     {
         id: 'swift',
@@ -30,11 +42,23 @@ const vehicles = [
         type: 'car',
         category: 'Premium Hatchback',
         pricePerDay: 1800,
-        image: 'https://images.unsplash.com/photo-1631481358042-3e3c042217f2?auto=format&fit=crop&q=80&w=800',
+        image: 'https://www.varunmaruti.com/uploads/products/colors/new-swift-pearlr-arctic-white-with-midnight-black-roof.png',
         transmission: 'Automatic',
         fuel: 'Petrol',
         seats: 5,
         features: ['Auto Available', 'Sporty Drive', 'Keyless Entry', 'Bluetooth']
+    },
+    {
+        id: 'swift',
+        name: 'Maruti Swift',
+        type: 'car',
+        category: 'Premium Hatchback',
+        pricePerDay: 1800,
+        image: 'https://image2url.com/r2/default/images/1771086979849-965ca50c-72cc-4015-a047-c020fa50af0d.jpeg',
+        transmission: 'Manual',
+        fuel: 'Petrol',
+        seats: 5,
+        features: ['Manual Available', 'Sporty Drive', 'Keyless Entry', 'Bluetooth']
     },
     {
         id: 'swift',
@@ -48,6 +72,24 @@ const vehicles = [
         seats: 5,
         features: ['Manual Available', 'Sporty Drive', 'Keyless Entry', 'Bluetooth']
     },
+    {
+    id: "mercedes_c300",
+    name: "Mercedes-Benz C300",
+    type: "car",
+    category: "Luxury Sedan",
+    pricePerDay: 18000,
+    image: "https://image2url.com/r2/default/images/1771086392720-50bf550e-b4e3-4657-841c-8440eb5f8994.jpeg",
+    transmission: 'Automatic',
+    fuel: "Petrol",
+    seats: 5,
+    features: [
+      "Luxury convertible",
+      "Sunroof",
+      "Dual-Zone Climate Control",
+      "Advanced Safety Features",
+      "Premium Sound System"
+    ]
+  },
     {
         id: 'baleno',
         name: 'Maruti Baleno',
@@ -67,10 +109,22 @@ const vehicles = [
         category: 'Luxury Hatchback',
         pricePerDay: 2100,
         image: 'https://image2url.com/r2/default/images/1771084107396-de073f29-76b3-4b8d-9009-be3059a77fba.jpeg',
-        transmission: 'Manual / Automatic',
+        transmission: 'Automatic',
         fuel: 'Petrol',
         seats: 5,
-        features: ['Manual/Auto Available', 'Sunroof', 'Premium Audio', 'Air Purifier']
+        features: ['Auto Available', 'Sunroof', 'Premium Audio', 'Air Purifier']
+    },
+    {
+        id: 'i20',
+        name: 'Hyundai i20',
+        type: 'car',
+        category: 'Luxury Hatchback',
+        pricePerDay: 2100,
+        image: 'https://image2url.com/r2/default/images/1771085775326-5bfe945e-d68a-4474-8584-e0faa4d08a1a.jpeg',
+        transmission: 'Manual',
+        fuel: 'Petrol',
+        seats: 5,
+        features: ['Manual Available', 'Sunroof', 'Premium Audio', 'Air Purifier']
     },
     {
         id: 'brezza',
@@ -126,7 +180,7 @@ const vehicles = [
         type: 'car',
         category: 'Premium MUV',
         pricePerDay: 3200,
-        image: 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&q=80&w=800',
+        image: 'https://image2url.com/r2/default/images/1771086756653-26b04aeb-abcb-4bab-bf85-f14a576e0015.jpeg',
         transmission: 'Manual / Automatic',
         fuel: 'Diesel',
         seats: 7,
@@ -150,7 +204,7 @@ const vehicles = [
         type: 'car',
         category: 'Adventure SUV',
         pricePerDay: 3500,
-        image: 'https://image2url.com/r2/default/images/1771084019004-13492275-dca8-4f5a-b2e5-e1527576fe03.jpg',
+        image: 'https://image2url.com/r2/default/images/1771085007230-e3056cd4-758f-43a1-857c-024057a6fdd5.jpeg',
         transmission: 'Automatic',
         fuel: 'Diesel',
         seats: 4,
@@ -175,7 +229,7 @@ const vehicles = [
         type: 'car',
         category: 'Premium 4x4 SUV',
         pricePerDay: 4500,
-        image: 'https://images.unsplash.com/photo-1636120539121-509536098f98?auto=format&fit=crop&q=80&w=800',
+        image: 'https://image2url.com/r2/default/images/1771084019004-13492275-dca8-4f5a-b2e5-e1527576fe03.jpg',
         transmission: 'Automatic Only',
         fuel: 'Diesel',
         seats: 5,
@@ -187,7 +241,7 @@ const vehicles = [
         type: 'car',
         category: 'Luxury SUV',
         pricePerDay: 7500,
-        image: 'https://images.unsplash.com/photo-1617469767053-d3b508a0d182?auto=format&fit=crop&q=80&w=800',
+        image: 'https://image2url.com/r2/default/images/1771085163103-0cfc8bf6-b170-4f60-9be3-068e68b08592.jpeg',
         transmission: 'Automatic Only',
         fuel: 'Diesel',
         seats: 7,
@@ -199,7 +253,7 @@ const vehicles = [
         type: 'car',
         category: 'Luxury Hybrid MUV',
         pricePerDay: 5500,
-        image: 'https://images.unsplash.com/photo-1619405020182-69078101f32e?auto=format&fit=crop&q=80&w=800',
+        image: 'https://image2url.com/r2/default/images/1771086867555-f1b998ba-9d26-4c0e-b1c8-d55ddb7e33b8.jpeg',
         transmission: 'Automatic Only',
         fuel: 'Petrol Hybrid',
         seats: 7,
