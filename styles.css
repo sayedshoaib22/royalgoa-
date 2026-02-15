@@ -58,6 +58,37 @@ body.dark {
   background-color: var(--primary);
 }
 
+/* Site logo styles */
+.site-logo {
+  display: inline-block;
+  object-fit: contain;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.site-logo--navbar {
+  height: 45px;
+  width: auto;
+}
+
+.site-logo--footer {
+  height: 35px;
+  width: auto;
+}
+
+.site-logo:hover {
+  transform: scale(1.06);
+}
+
+@media (max-width: 640px) {
+  .site-logo--navbar {
+    height: 38px;
+  }
+
+  .site-logo--footer {
+    height: 30px;
+  }
+}
+
 .bg-primary-dark {
   background-color: var(--primary-dark);
 }

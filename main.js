@@ -1,5 +1,5 @@
 /**
- * PrimeGoa Rentals - Main Application File
+ * RoyalGoa Rentals - Main Application File
  * Merged from data.js and script.js
  * Contains: Vehicles array, all functions, and app logic
  */
@@ -379,7 +379,7 @@ const vehicles = [
     pricePerDay: 500,
     deposit: 1000,
     image: 'https://image2url.com/r2/default/images/1771142393014-49d9578b-16b2-4e2e-b958-77fcbba93a25.jpeg',
-    transmission: 'Automatic',
+    transmission: 'manual',
     fuel: 'Petrol',
     seats: 2,
     features: ['Comfortable Ride', 'Easy Handling', 'Great Mileage', 'Under-seat Storage']
@@ -392,7 +392,7 @@ const vehicles = [
     pricePerDay: 600,
     deposit: 1000,
     image: 'https://image2url.com/r2/default/images/1771141146471-5eb9de67-def0-4725-890d-4e4dbeae6b9e.jpeg',
-    transmission: 'Automatic',
+    transmission: 'manual',
     fuel: 'Petrol',
     seats: 2,
     features: ['Comfortable Ride', 'Easy Handling', 'Great Mileage', 'Under-seat Storage']
@@ -1143,7 +1143,7 @@ function handleBookingSubmit(event) {
   const vehicleName = selectedVehicle ? (selectedVehicle.name || 'Not specified') : 'Not specified';
 
   // Build a plain-text message then encode it once for the URL
-  let plainMessage = `*New Booking Request from PrimeGoa*\n\nCustomer: ${name}\nPhone: ${phone}\nVehicle: ${vehicleName}\n`;
+  let plainMessage = `*New Booking Request from RoyalGoa*\n\nCustomer: ${name}\nPhone: ${phone}\nVehicle: ${vehicleName}\n`;
   if (transmission) plainMessage += `Transmission: ${transmission}\n`;
   if (pickup) plainMessage += `Pickup Station: ${pickup}\n`;
   if (pickupLocation) plainMessage += `Pickup Location: ${pickupLocation}\n`;
