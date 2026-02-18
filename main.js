@@ -959,7 +959,7 @@ function renderVehicleCard(vehicle) {
       </div>
       <div class="p-6 flex flex-col flex-grow">
         <h3 class="text-xl font-bold mb-4 font-serif">${name}</h3>
-        ${isDualTransmission ? '<div class="mb-4 p-2 bg-blue-50 border-l-4 border-blue-400 rounded"><span class="text-sm font-semibold text-blue-700">✓ Available in Manual & Automatic</span></div>' : ''}
+        ${isDualTransmission ? '<div class="mb-4 p-2 bg-blue-50 border-l-4 border-blue-400 rounded"><span class="text-sm font-semibold text-blue-700"></span></div>' : ''}
         <div class="grid grid-cols-2 gap-3 mb-6">
           <div class="flex items-center text-sm text-slate-500">
             <svg class="w-4 h-4 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
