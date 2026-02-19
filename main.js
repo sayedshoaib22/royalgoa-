@@ -630,11 +630,43 @@ function handleScroll() {
 // SECTION 6: VEHICLE SELECTION & RENDERING
 // ============================================
 
-function selectVehicle(vehicleId) {
+function selectVehicle(vehicleId, transmission) {
   const list = typeof vehicles !== 'undefined' ? vehicles : [];
   selectedVehicle = list.find(v => v.id === vehicleId) || null;
+  if (transmission) {
+    bookingFormData.transmission = transmission;
+  }
   bookingStep = 1;
   navigateTo('booking');
+}
+
+// Merge vehicles with same ID/name to group manual and automatic
+function mergeVehiclesByName(vehiclesList) {
+  const merged = {};
+
+  vehiclesList.forEach(vehicle => {
+    const key = `${vehicle.type}_${vehicle.id}`;
+    if (!merged[key]) {
+      merged[key] = {
+        ...vehicle,
+        transmissions: []
+      };
+    }
+
+    // Remove old transmission field and add to transmissions array
+    const transObj = {
+      type: vehicle.transmission.replace(' / Automatic', '').replace(' / Manual', '').replace(' Manual', '').replace(' Automatic', '').trim(),
+      price: vehicle.pricePerDay,
+      originalVehicle: vehicle
+    };
+
+    // Avoid duplicates
+    if (!merged[key].transmissions.some(t => t.type === transObj.type)) {
+      merged[key].transmissions.push(transObj);
+    }
+  });
+
+  return Object.values(merged);
 }
 
 function renderPage() {
@@ -665,9 +697,10 @@ function renderPage() {
 }
 
 function renderHomePage(list) {
-  const featured = (list || []).slice(0, 6);
+  const merged = mergeVehiclesByName(list || []);
+  const featured = merged.slice(0, 6);
   const cards = featured.length
-    ? featured.map(v => renderVehicleCard(v)).join('')
+    ? featured.map(v => renderMergedVehicleCard(v)).join('')
     : '<div class="col-span-full text-center py-16 text-slate-500">No vehicles found.</div>';
 
   return `
@@ -733,7 +766,8 @@ function renderHomePage(list) {
 
 function renderVehiclesPage(type, list) {
   const vehiclesList = list || [];
-  const filtered = vehiclesList
+  const merged = mergeVehiclesByName(vehiclesList);
+  const filtered = merged
     .filter(v => v.type === type)
     .filter(v =>
       (v.name || '').toLowerCase().includes((searchQuery || '').toLowerCase()) ||
@@ -744,7 +778,7 @@ function renderVehiclesPage(type, list) {
   const subtitle = type === 'car' ? 'Elegance in Motion' : 'Freedom on Two Wheels';
 
   const gridContent = filtered.length > 0
-    ? `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">${filtered.map(v => renderVehicleCard(v)).join('')}</div>`
+    ? `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">${filtered.map(v => renderMergedVehicleCard(v)).join('')}</div>`
     : `
       <div class="empty-state">
         <svg class="h-12 w-12 mx-auto mb-4 empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -782,6 +816,17 @@ function renderBookingPage(list) {
   }
 
   const imgSrc = selectedVehicle ? getVehicleImage(selectedVehicle) : '';
+
+  let selectedPrice = selectedVehicle && selectedVehicle.pricePerDay ? selectedVehicle.pricePerDay : 0;
+  let selectedTransmissionDisplay = bookingFormData.transmission || 'Select';
+
+  if (selectedVehicle && selectedVehicle.transmissions && bookingFormData.transmission) {
+    const selectedTrans = selectedVehicle.transmissions.find(t => t.type === bookingFormData.transmission);
+    if (selectedTrans) {
+      selectedPrice = selectedTrans.price;
+    }
+  }
+
   const selectedBlock = selectedVehicle
     ? `
       <div class="p-6 mb-10 rounded-3xl flex items-center space-x-6 selected-vehicle-block">
@@ -789,7 +834,8 @@ function renderBookingPage(list) {
         <div>
           <span class="text-xs font-bold uppercase tracking-widest text-primary mb-1 block">Selected Vehicle</span>
           <h4 class="text-xl font-bold">${(selectedVehicle.name || '').replace(/</g, '&lt;')}</h4>
-          <p class="text-sm text-slate-500">₹${selectedVehicle.pricePerDay || 0} per day</p>
+          <p class="text-sm text-slate-600">${selectedTransmissionDisplay}</p>
+          <p class="text-sm font-bold text-primary">₹${selectedPrice}/day</p>
         </div>
       </div>
     `
@@ -878,20 +924,30 @@ function renderBookingPage(list) {
                 <input type="number" min="1" required id="booking-duration" class="input-field" value="${(bookingFormData.duration || '1').replace(/"/g, '&quot;')}">
               </div>
             </div>
-            ${selectedVehicle && selectedVehicle.transmission === 'Manual / Automatic' ? `
+            ${selectedVehicle && selectedVehicle.transmissions && selectedVehicle.transmissions.length > 1 ? `
             <div>
               <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Select Transmission</label>
-              <select id="booking-transmission" class="input-field" required>
-                <option value="" disabled selected>Choose transmission...</option>
-                <option value="Manual" ${bookingFormData.transmission === 'Manual' ? 'selected' : ''}>Manual</option>
-                <option value="Automatic" ${bookingFormData.transmission === 'Automatic' ? 'selected' : ''}>Automatic</option>
-              </select>
+              <div class="grid grid-cols-2 gap-3">
+                ${selectedVehicle.transmissions.map(trans => `
+                  <label class="transmission-radio-label">
+                    <input type="radio" name="transmission" value="${trans.type}" ${bookingFormData.transmission === trans.type ? 'checked' : ''} required onchange="document.getElementById('booking-transmission').value = this.value">
+                    <span class="transmission-radio-text">${trans.type}<br/>₹${trans.price}</span>
+                  </label>
+                `).join('')}
+              </div>
+              <input type="hidden" id="booking-transmission" value="${bookingFormData.transmission || (selectedVehicle.transmissions[0] ? selectedVehicle.transmissions[0].type : '')}">
             </div>
-            ` : selectedVehicle && selectedVehicle.transmission === 'Automatic Only' ? `
+            ` : selectedVehicle && selectedVehicle.transmissions && selectedVehicle.transmissions.length === 1 ? `
             <div>
               <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Transmission</label>
-              <div class="input-field bg-slate-100 text-slate-700 font-semibold flex items-center">Automatic Only</div>
-              <input type="hidden" id="booking-transmission" value="Automatic Only">
+              <div class="input-field bg-slate-100 text-slate-700 font-semibold flex items-center">${selectedVehicle.transmissions[0].type}</div>
+              <input type="hidden" id="booking-transmission" value="${selectedVehicle.transmissions[0].type}">
+            </div>
+            ` : bookingFormData.transmission ? `
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Transmission</label>
+              <div class="input-field bg-slate-100 text-slate-700 font-semibold flex items-center">${bookingFormData.transmission}</div>
+              <input type="hidden" id="booking-transmission" value="${bookingFormData.transmission}">
             </div>
             ` : ''}
             <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white py-5 rounded-2xl font-black text-xl shadow-lg transition-all flex items-center justify-center space-x-3">
@@ -931,6 +987,55 @@ function renderSectionHeading(title, subtitle, centered) {
       <span class="text-primary font-black uppercase tracking-widest text-sm mb-2 block">${(subtitle || '').replace(/</g, '&lt;')}</span>
       <h2 class="text-3xl md:text-5xl font-black font-serif">${(title || '').replace(/</g, '&lt;')}</h2>
       ${centered ? '<div class="section-divider"></div>' : ''}
+    </div>
+  `;
+}
+
+function renderMergedVehicleCard(vehicle) {
+  if (!vehicle) return '';
+  const img = getVehicleImage(vehicle);
+  const name = (vehicle.name || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  const category = (vehicle.category || '').replace(/</g, '&lt;');
+  const defaultDeposit = vehicle.type === 'car' ? 3000 : 1000;
+  const deposit = (vehicle.deposit !== undefined && vehicle.deposit !== null) ? vehicle.deposit : defaultDeposit;
+  const hasMultipleTransmissions = vehicle.transmissions && vehicle.transmissions.length > 1;
+
+  // Sort transmissions: Manual first, then Automatic, then others
+  const sortedTransmissions = vehicle.transmissions ? [...vehicle.transmissions].sort((a, b) => {
+    const order = { 'Manual': 0, 'Automatic': 1 };
+    return (order[a.type] || 2) - (order[b.type] || 2);
+  }) : [];
+
+  const transmissionButtons = sortedTransmissions.map(trans => `
+    <button onclick="selectVehicle('${(vehicle.id || '').replace(/'/g, "\\'")}', '${trans.type}')" class="transmission-btn">
+      <span class="transmission-label">${trans.type}</span>
+      <span class="transmission-price">₹${trans.price}</span>
+    </button>
+  `).join('');
+
+  return `
+    <div class="premium-vehicle-card">
+      <div class="vehicle-image-container">
+        <img src="${img}" alt="${name}" class="vehicle-image" onerror="this.src='${PLACEHOLDER_IMAGE}'">
+        <div class="category-badge">${category}</div>
+      </div>
+      <div class="card-content">
+        <h3 class="vehicle-name">${name}</h3>
+        <div class="specs-grid">
+          <div class="spec-item">
+            <svg class="spec-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+            <span>${(vehicle.fuel || '').replace(/</g, '&lt;')}</span>
+          </div>
+          <div class="spec-item">
+            <svg class="spec-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>${vehicle.seats || 0} Seats</span>
+          </div>
+        </div>
+        <div class="deposit-info">💰 Deposit: ₹${deposit}</div>
+        <div class="transmission-options">
+          ${transmissionButtons}
+        </div>
+      </div>
     </div>
   `;
 }
