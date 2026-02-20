@@ -43,7 +43,7 @@ const vehicles = [
     name: 'Maruti Swift',
     type: 'car',
     category: 'Premium Hatchback',
-    pricePerDay: 1600,
+    pricePerDay: 1400,
     deposit: 3000,
     image: 'https://www.varunmaruti.com/uploads/products/colors/new-swift-pearlr-arctic-white-with-midnight-black-roof.png',
     transmission: 'Automatic',
@@ -182,7 +182,7 @@ const vehicles = [
     pricePerDay: 3000,
     deposit: 5000,
     image: 'https://image2url.com/r2/default/images/1771081314416-a3bc164b-c3e0-4074-aff3-0f79b2454253.jpeg',
-    transmission: 'Manual ',
+    transmission: 'Manual',
     fuel: 'Diesel',
     seats: 5,
     features: ['Manual Available', 'Panoramic Sunroof', 'Ventilated Seats', 'Bose Speakers']
@@ -191,7 +191,7 @@ const vehicles = [
     id: 'ertiga',
     name: 'Maruti Ertiga',
     type: 'car',
-    category: 'MUV / 7 Seater',
+    category: 'SUV / 7 Seater',
     pricePerDay: 2300,
     deposit: 3000,
     image: 'https://image2url.com/r2/default/images/1771083423558-6d9933ca-f849-46ea-8f35-24715d02f016.jpeg',
@@ -204,11 +204,11 @@ const vehicles = [
     id: 'ertiga',
     name: 'Maruti Ertiga',
     type: 'car',
-    category: 'MUV / 7 Seater',
+    category: 'SUV / 7 Seater',
     pricePerDay: 2800,
     deposit: 3000,
     image: 'https://image2url.com/r2/default/images/1771083423558-6d9933ca-f849-46ea-8f35-24715d02f016.jpeg',
-    transmission: ' Automatic',
+    transmission: 'Automatic',
     fuel: 'Petrol',
     seats: 7,
     features: ['Auto Available', 'Perfect for Families', 'Rear AC Vents', 'Flexible Seating']
@@ -217,7 +217,7 @@ const vehicles = [
     id: 'carens',
     name: 'Kia Carens',
     type: 'car',
-    category: 'Premium MUV',
+    category: 'Premium SUV',
     pricePerDay: 3200,
     deposit: 3000,
     image: 'https://image2url.com/r2/default/images/1771086756653-26b04aeb-abcb-4bab-bf85-f14a576e0015.jpeg',
@@ -230,7 +230,7 @@ const vehicles = [
     id: 'carens',
     name: 'Kia Carens',
     type: 'car',
-    category: 'Premium MUV',
+    category: 'Premium SUV',
     pricePerDay: 3000,
     deposit: 3000,
     image: 'https://image2url.com/r2/default/images/1771086756653-26b04aeb-abcb-4bab-bf85-f14a576e0015.jpeg',
@@ -243,8 +243,8 @@ const vehicles = [
     id: 'crysta',
     name: 'Toyota Innova Crysta',
     type: 'car',
-    category: 'Luxury MUV',
-    pricePerDay: 2500,
+    category: 'Luxury SUV',
+    pricePerDay: 3000,
     deposit: 5000,
     image: 'https://image2url.com/r2/default/images/1771082409934-b12afb7d-7dfd-42d5-a583-c6b96ae3b097.jpeg',
     transmission: 'Manual',
@@ -256,11 +256,11 @@ const vehicles = [
     id: 'crysta',
     name: 'Toyota Innova Crysta',
     type: 'car',
-    category: 'Luxury MUV',
+    category: 'Luxury SUV',
     pricePerDay: 3500,
     deposit: 5000,
     image: 'https://image2url.com/r2/default/images/1771082409934-b12afb7d-7dfd-42d5-a583-c6b96ae3b097.jpeg',
-    transmission: ' Automatic',
+    transmission: 'Automatic',
     fuel: 'Diesel',
     seats: 7,
     features: ['Auto Available', 'Maximum Comfort', 'Legendary Reliability', 'Premium Leather']
@@ -335,7 +335,7 @@ const vehicles = [
     id: 'hycross',
     name: 'Toyota Innova Hycross',
     type: 'car',
-    category: 'Luxury Hybrid MUV',
+    category: 'Luxury Hybrid SUV',
     pricePerDay: 3500,
     deposit: 5000,
     image: 'https://image2url.com/r2/default/images/1771086867555-f1b998ba-9d26-4c0e-b1c8-d55ddb7e33b8.jpeg',
@@ -373,7 +373,7 @@ const vehicles = [
   // --- Bikes ---
   {
     id: 'activa',
-    name: 'Honda Activa 125',
+    name: 'Activa 125',
     type: 'bike',
     category: 'Scooter',
     pricePerDay: 500,
@@ -385,8 +385,8 @@ const vehicles = [
     features: ['Comfortable Ride', 'Easy Handling', 'Great Mileage', 'Under-seat Storage']
   },
   {
-    id: 'activa',
-    name: 'Honda Activa Fasino 125 ',
+    id: 'fasino',
+    name: ' Fasino ',
     type: 'bike',
     category: 'Scooter',
     pricePerDay: 600,
@@ -537,12 +537,24 @@ document.addEventListener('DOMContentLoaded', () => {
           if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-red-600">Error loading content. Please refresh the page.</div>';
         }
         loadingScreen.style.display = 'none';
+        // Show WhatsApp button after page renders
+        const whatsappBtn = $('whatsapp-btn');
+        if (whatsappBtn) {
+          whatsappBtn.classList.remove('opacity-0', 'invisible');
+          whatsappBtn.classList.add('opacity-100', 'visible');
+        }
       }, 1500);
       setTimeout(() => {
         if (loadingScreen) loadingScreen.style.display = 'none';
       }, 5000);
     } else {
       renderPage();
+      // Show WhatsApp button if loading screen doesn't exist
+      const whatsappBtn = $('whatsapp-btn');
+      if (whatsappBtn) {
+        whatsappBtn.classList.remove('opacity-0', 'invisible');
+        whatsappBtn.classList.add('opacity-100', 'visible');
+      }
     }
 
     window.addEventListener('scroll', handleScroll);
@@ -653,16 +665,35 @@ function mergeVehiclesByName(vehiclesList) {
       };
     }
 
-    // Remove old transmission field and add to transmissions array
-    const transObj = {
-      type: vehicle.transmission.replace(' / Automatic', '').replace(' / Manual', '').replace(' Manual', '').replace(' Automatic', '').trim(),
-      price: vehicle.pricePerDay,
-      originalVehicle: vehicle
-    };
+    // Clean and parse transmission type
+    let transType = (vehicle.transmission || '').trim();
 
-    // Avoid duplicates
-    if (!merged[key].transmissions.some(t => t.type === transObj.type)) {
-      merged[key].transmissions.push(transObj);
+    // Handle "X Automatic Only" format
+    if (transType.endsWith(' Only')) {
+      transType = transType.replace(' Only', '').trim();
+    }
+
+    // For dual transmission types, split and add both
+    if (transType.includes(' / ')) {
+      const parts = transType.split(' / ').map(p => p.trim());
+      parts.forEach(part => {
+        if (part && !merged[key].transmissions.some(t => t.type === part)) {
+          merged[key].transmissions.push({
+            type: part,
+            price: vehicle.pricePerDay,
+            originalVehicle: vehicle
+          });
+        }
+      });
+    } else {
+      // Single transmission type
+      if (transType && !merged[key].transmissions.some(t => t.type === transType)) {
+        merged[key].transmissions.push({
+          type: transType,
+          price: vehicle.pricePerDay,
+          originalVehicle: vehicle
+        });
+      }
     }
   });
 
@@ -999,6 +1030,7 @@ function renderMergedVehicleCard(vehicle) {
   const defaultDeposit = vehicle.type === 'car' ? 3000 : 1000;
   const deposit = (vehicle.deposit !== undefined && vehicle.deposit !== null) ? vehicle.deposit : defaultDeposit;
   const hasMultipleTransmissions = vehicle.transmissions && vehicle.transmissions.length > 1;
+  const isCar = vehicle.type === 'car';
 
   // Sort transmissions: Manual first, then Automatic, then others
   const sortedTransmissions = vehicle.transmissions ? [...vehicle.transmissions].sort((a, b) => {
@@ -1006,35 +1038,54 @@ function renderMergedVehicleCard(vehicle) {
     return (order[a.type] || 2) - (order[b.type] || 2);
   }) : [];
 
-  const transmissionButtons = sortedTransmissions.map(trans => `
+  // Only show transmission buttons for cars
+  const transmissionButtons = isCar ? sortedTransmissions.map(trans => `
     <button onclick="selectVehicle('${(vehicle.id || '').replace(/'/g, "\\'")}', '${trans.type}')" class="transmission-btn">
       <span class="transmission-label">${trans.type}</span>
       <span class="transmission-price">₹${trans.price}</span>
     </button>
-  `).join('');
+  `).join('') : '';
+
+  // Specs grid: Show fuel and seats for cars, minimal for bikes
+  const specsGrid = isCar ? `
+    <div class="spec-item">
+      <svg class="spec-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+      <span>${(vehicle.fuel || '').replace(/</g, '&lt;')}</span>
+    </div>
+    <div class="spec-item">
+      <svg class="spec-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span>${vehicle.seats || 0} Seats</span>
+    </div>
+  ` : '';
+
+  // For bikes: show price and a select button instead of transmission options
+  const bikePrice = !isCar && vehicle.pricePerDay ? `
+    <div class="bike-price-display">₹${vehicle.pricePerDay}<span class="price-unit">/day</span></div>
+  ` : '';
+
+  const bikeSelectButton = !isCar ? `
+    <button onclick="selectVehicle('${(vehicle.id || '').replace(/'/g, "\\'")}')" class="transmission-btn" style="grid-column: span 2;">
+      <span class="transmission-label">Select This Bike</span>
+      <span class="transmission-price">Book Now</span>
+    </button>
+  ` : '';
+
+  const actionSection = isCar ?
+    `<div class="transmission-options">${transmissionButtons}</div>` :
+    `${bikePrice}<div class="transmission-options">${bikeSelectButton}</div>`;
 
   return `
     <div class="premium-vehicle-card">
       <div class="vehicle-image-container">
         <img src="${img}" alt="${name}" class="vehicle-image" onerror="this.src='${PLACEHOLDER_IMAGE}'">
         <div class="category-badge">${category}</div>
+        <div class="deposit-badge">DEPOSIT<br>₹${deposit}</div>
       </div>
       <div class="card-content">
         <h3 class="vehicle-name">${name}</h3>
-        <div class="specs-grid">
-          <div class="spec-item">
-            <svg class="spec-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-            <span>${(vehicle.fuel || '').replace(/</g, '&lt;')}</span>
-          </div>
-          <div class="spec-item">
-            <svg class="spec-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span>${vehicle.seats || 0} Seats</span>
-          </div>
-        </div>
-        <div class="deposit-info">💰 Deposit: ₹${deposit}</div>
-        <div class="transmission-options">
-          ${transmissionButtons}
-        </div>
+        ${specsGrid ? `<div class="specs-grid">${specsGrid}</div>` : ''}
+        ${actionSection}
+        ${isCar ? `<div class="price-disclaimer">* Per day price excludes fuel</div>` : ''}
       </div>
     </div>
   `;

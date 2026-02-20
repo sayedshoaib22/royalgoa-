@@ -1682,15 +1682,20 @@ body.dark .dark\:hover\:bg-primary:hover {
 
 /* Deposit Badge */
 .deposit-badge {
-  background: #fff3cd;
-  color: #b8860b;
-  padding: 6px 12px;
-  border-radius: 10px;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: linear-gradient(135deg, var(--primary), #17b9a9);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 16px;
   font-weight: 700;
-  margin: 10px 0;
-  display: block;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* ========================================
@@ -1699,19 +1704,19 @@ body.dark .dark\:hover\:bg-primary:hover {
 
 .premium-vehicle-card {
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.35s ease;
   display: flex;
   flex-direction: column;
   height: 100%;
-  border: 1px solid #f0f5f9;
+  border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 .premium-vehicle-card:hover {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
 }
 
 .vehicle-image-container {
@@ -1719,7 +1724,8 @@ body.dark .dark\:hover\:bg-primary:hover {
   width: 100%;
   height: 240px;
   overflow: hidden;
-  background: #f8fafc;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 20px 20px 0 0;
 }
 
 .vehicle-image {
@@ -1749,7 +1755,7 @@ body.dark .dark\:hover\:bg-primary:hover {
 }
 
 .card-content {
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -1757,10 +1763,11 @@ body.dark .dark\:hover\:bg-primary:hover {
 
 .vehicle-name {
   font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 12px 0;
-  color: #1e293b;
+  font-weight: 800;
+  margin: 0 0 14px 0;
+  color: #0f172a;
   font-family: 'Playfair Display', serif;
+  letter-spacing: -0.5px;
 }
 
 .specs-grid {
@@ -1789,24 +1796,59 @@ body.dark .dark\:hover\:bg-primary:hover {
 .deposit-info {
   background: linear-gradient(135deg, #fef3c7, #fde68a);
   color: #92400e;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
   font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 14px;
+  font-weight: 700;
+  margin-bottom: 16px;
   text-align: center;
+  border: 1px solid #f5d76e;
+}
+
+.bike-price-display {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  color: var(--primary);
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  text-align: center;
+  border: 1px solid #a7f3d0;
+}
+
+.price-unit {
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 4px;
+  opacity: 0.9;
+}
+
+.price-disclaimer {
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: center;
+  margin-top: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .transmission-options {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 12px;
   margin-top: auto;
+  align-items: stretch;
+  /* make rows equal height so each button fills its cell */
+  grid-auto-rows: 1fr;
 }
 
 @media (max-width: 640px) {
   .transmission-options {
     grid-template-columns: 1fr;
+    /* on mobile let rows size naturally */
+    grid-auto-rows: auto;
+    align-items: stretch;
   }
 }
 
@@ -1815,39 +1857,44 @@ body.dark .dark\:hover\:bg-primary:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 10px;
+  padding: 18px 16px;
   background: #f8fafc;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
+  border: 2px solid #ecf1f5;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: 600;
-  font-size: 13px;
-  gap: 4px;
+  transition: all 0.25s ease;
+  font-weight: 700;
+  gap: 8px;
+  /* fill the grid cell to ensure equal width/height between buttons */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .transmission-btn:hover {
   border-color: var(--primary);
-  background: #f0fdf9;
-  color: var(--primary);
-  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
+  background: linear-gradient(135deg, #e8fdf9, #d1faf5);
+  box-shadow: 0 8px 20px rgba(13, 148, 136, 0.15);
+  transform: translateY(-2px);
 }
 
 .transmission-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .transmission-label {
   font-weight: 700;
-  font-size: 12px;
+  font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
+  color: #334155;
 }
 
 .transmission-price {
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 22px;
+  font-weight: 900;
   color: var(--primary);
+  letter-spacing: -0.5px;
 }
 
 .transmission-btn:hover .transmission-price {
@@ -1869,28 +1916,44 @@ body.dark .spec-item {
 }
 
 body.dark .transmission-btn {
-  background: #334155;
-  border-color: #475569;
+  background: #1e293b;
+  border-color: #334155;
   color: #e2e8f0;
 }
 
 body.dark .transmission-btn:hover {
-  background: #475569;
+  background: #334155;
   border-color: var(--primary);
+  box-shadow: 0 8px 20px rgba(13, 148, 136, 0.25);
+}
+
+body.dark .transmission-label {
+  color: #cbd5e1;
+}
+
+body.dark .price-disclaimer {
+  color: #64748b;
+}
+
+body.dark .bike-price-display {
+  background: linear-gradient(135deg, #064e3b, #047857);
+  color: #86efac;
+  border-color: #10b981;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .premium-vehicle-card {
-    border-radius: 12px;
+    border-radius: 16px;
   }
 
   .vehicle-image-container {
     height: 200px;
+    border-radius: 16px 16px 0 0;
   }
 
   .card-content {
-    padding: 16px;
+    padding: 18px;
   }
 
   .vehicle-name {
@@ -1903,20 +1966,37 @@ body.dark .transmission-btn:hover {
     gap: 8px;
   }
 
-  .deposit-info {
-    padding: 9px 10px;
-    font-size: 12px;
-    margin-bottom: 12px;
+  .deposit-badge {
+    padding: 10px 12px;
+    font-size: 11px;
+    top: 12px;
+    right: 12px;
   }
 
   .transmission-options {
-    gap: 8px;
+    gap: 10px;
+    margin-top: auto;
   }
 
   .transmission-btn {
-    padding: 10px 8px;
+    padding: 16px 12px;
+    /* on smaller screens allow natural height but keep full width */
+    min-height: unset;
+    border-radius: 12px;
+    height: auto;
+  }
+
+  .transmission-label {
     font-size: 12px;
-    gap: 3px;
+  }
+
+  .transmission-price {
+    font-size: 18px;
+  }
+
+  .price-disclaimer {
+    font-size: 10px;
+    margin-top: 10px;
   }
 }
 
@@ -1957,4 +2037,25 @@ body.dark .transmission-btn:hover {
 
 .transmission-radio-text {
   line-height: 1.4;
+}
+
+/* WhatsApp Floating Button - Visibility Animation */
+#whatsapp-btn {
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#whatsapp-btn.opacity-0 {
+  opacity: 0;
+}
+
+#whatsapp-btn.opacity-100 {
+  opacity: 1;
+}
+
+#whatsapp-btn.invisible {
+  visibility: hidden;
+}
+
+#whatsapp-btn.visible {
+  visibility: visible;
 }
