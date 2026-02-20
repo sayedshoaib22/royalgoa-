@@ -65,19 +65,6 @@ const vehicles = [
     features: ['Manual Available', 'Sporty Drive', 'Keyless Entry', 'Bluetooth']
   },
   {
-    id: 'swift',
-    name: 'Maruti Swift Dzire',
-    type: 'car',
-    category: 'Premium Hatchback',
-    pricePerDay: 1100,
-    deposit: 3000,
-    image: 'https://image2url.com/r2/default/images/1771082738713-e7c92e6b-5af8-4a10-95ea-2987d819b9c1.jpg',
-    transmission: 'Manual',
-    fuel: 'Petrol',
-    seats: 5,
-    features: ['Manual Available', 'Sporty Drive', 'Keyless Entry', 'Bluetooth']
-  },
-  {
     id: "mercedes_c300",
     name: "Mercedes-Benz C300",
     type: "car",
@@ -1350,3 +1337,4 @@ function handleBookingSubmit(event) {
 // ============================================
 // END OF MERGED main.js FILE
 // ============================================
+
