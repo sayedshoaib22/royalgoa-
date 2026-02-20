@@ -17,7 +17,7 @@ const vehicles = [
     name: 'Maruti Ignis',
     type: 'car',
     category: 'Compact Hatchback',
-    pricePerDay: 1600,
+    pricePerDay: 1400,
     deposit: 3000,
     image: 'https://image2url.com/r2/default/images/1771085514586-f48442cc-255d-424b-8a86-bd933470a02e.jpeg',
     transmission: 'Automatic',
@@ -43,9 +43,9 @@ const vehicles = [
     name: 'Maruti Swift',
     type: 'car',
     category: 'Premium Hatchback',
-    pricePerDay: 1400,
+    pricePerDay: 1500,
     deposit: 3000,
-    image: 'https://www.varunmaruti.com/uploads/products/colors/new-swift-pearlr-arctic-white-with-midnight-black-roof.png',
+    image: 'https://image2url.com/r2/default/images/1771086979849-965ca50c-72cc-4015-a047-c020fa50af0d.jpeg',
     transmission: 'Automatic',
     fuel: 'Petrol',
     seats: 5,
@@ -453,7 +453,24 @@ let bookingFormData = {
 
 function getVehicleImage(vehicle) {
   if (!vehicle) return PLACEHOLDER_IMAGE;
-  return (vehicle.image && vehicle.image.trim()) ? vehicle.image : PLACEHOLDER_IMAGE;
+  const url = (vehicle.image && vehicle.image.trim()) ? vehicle.image : PLACEHOLDER_IMAGE;
+  return url;
+}
+
+// Return a WebP variant if the source is an images.unsplash or same-origin PNG/JPG pattern (best-effort)
+function preferWebP(url) {
+  try {
+    if (!url) return url;
+    // Unsplash supports automatic format via &auto=format so keep as-is
+    if (url.includes('unsplash.com') || url.includes('image2url.com')) return url;
+    // If it's a .png or .jpg on same domain, attempt .webp
+    if (/\.(png|jpg|jpeg)$/i.test(url)) {
+      return url.replace(/\.(png|jpg|jpeg)$/i, '.webp');
+    }
+    return url;
+  } catch (e) {
+    return url;
+  }
 }
 
 function $(id) {
@@ -468,7 +485,7 @@ function getDemoVehicles() {
       type: 'car',
       category: 'Premium Hatchback',
       pricePerDay: 1800,
-      image: 'https://images.unsplash.com/photo-1631481358042-3e3c042217f2?auto=format&fit=crop&q=80&w=800',
+      image: 'https://image2url.com/r2/default/images/1771086979849-965ca50c-72cc-4015-a047-c020fa50af0d.jpeg',
       transmission: 'Automatic',
       fuel: 'Petrol',
       seats: 5,
@@ -526,30 +543,42 @@ document.addEventListener('DOMContentLoaded', () => {
     updateThemeIcons();
 
     const loadingScreen = $('loading-screen');
+    // Fix loading: render immediately (no artificial delay) and always hide loading screen even on render errors.
     if (loadingScreen) {
-      setTimeout(() => {
-        try {
-          renderPage();
-          console.log('Page rendered successfully');
-        } catch (renderErr) {
-          console.error('Page render error:', renderErr);
-          const mainContent = $('main-content');
-          if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-red-600">Error loading content. Please refresh the page.</div>';
-        }
-        loadingScreen.style.display = 'none';
-        // Show WhatsApp button after page renders
-        const whatsappBtn = $('whatsapp-btn');
-        if (whatsappBtn) {
-          whatsappBtn.classList.remove('opacity-0', 'invisible');
-          whatsappBtn.classList.add('opacity-100', 'visible');
-        }
-      }, 1500);
-      setTimeout(() => {
-        if (loadingScreen) loadingScreen.style.display = 'none';
-      }, 5000);
+      try {
+        renderPage();
+        console.log('Page rendered successfully');
+      } catch (renderErr) {
+        console.error('Page render error:', renderErr);
+        const mainContent = $('main-content');
+        if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-red-600">Error loading content. Please refresh the page.</div>';
+      }
+      // Always hide loading screen so user is not stuck on blank overlay
+      loadingScreen.style.display = 'none';
+      // Ensure main-content is not left empty by render functions
+      const mainContent = $('main-content');
+      if (mainContent && (!mainContent.innerHTML || mainContent.innerHTML.trim().length === 0)) {
+        mainContent.innerHTML = renderHomePage(window.vehicles || getDemoVehicles());
+      }
+      // Show WhatsApp button after page renders
+      const whatsappBtn = $('whatsapp-btn');
+      if (whatsappBtn) {
+        whatsappBtn.classList.remove('opacity-0', 'invisible');
+        whatsappBtn.classList.add('opacity-100', 'visible');
+      }
     } else {
-      renderPage();
-      // Show WhatsApp button if loading screen doesn't exist
+      // No loading overlay — still attempt to render and ensure main content is populated
+      try {
+        renderPage();
+      } catch (renderErr) {
+        console.error('Page render error (no loading-screen):', renderErr);
+        const mainContent = $('main-content');
+        if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-red-600">Error loading content. Please refresh the page.</div>';
+      }
+      const mainContent = $('main-content');
+      if (mainContent && (!mainContent.innerHTML || mainContent.innerHTML.trim().length === 0)) {
+        mainContent.innerHTML = renderHomePage(window.vehicles || getDemoVehicles());
+      }
       const whatsappBtn = $('whatsapp-btn');
       if (whatsappBtn) {
         whatsappBtn.classList.remove('opacity-0', 'invisible');
@@ -563,6 +592,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = $('main-content');
     if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-slate-600">Something went wrong. Please refresh the page.</div>';
   }
+});
+
+// Global error handlers: display a friendly message inside main-content when uncaught errors occur.
+window.addEventListener('error', (evt) => {
+  console.error('Uncaught error:', evt.error || evt.message || evt);
+  const mainContent = $('main-content');
+  if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-red-600">An unexpected error occurred. Check the console for details.</div>';
+});
+window.addEventListener('unhandledrejection', (evt) => {
+  console.error('Unhandled promise rejection:', evt.reason);
+  const mainContent = $('main-content');
+  if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-red-600">An unexpected error occurred. Check the console for details.</div>';
 });
 
 // ============================================
@@ -713,27 +754,86 @@ function mergeVehiclesByName(vehiclesList) {
 function renderPage() {
   const mainContent = $('main-content');
   if (!mainContent) return;
+  // Debug log to help trace which page is being rendered
+  console.log('Page rendering:', currentPage);
 
   const list = typeof vehicles !== 'undefined' ? vehicles : [];
 
-  switch (currentPage) {
-    case 'home':
-      mainContent.innerHTML = renderHomePage(list);
-      break;
-    case 'cars':
-      mainContent.innerHTML = renderVehiclesPage('car', list);
-      break;
-    case 'bikes':
-      mainContent.innerHTML = renderVehiclesPage('bike', list);
-      break;
-    case 'booking':
-      mainContent.innerHTML = renderBookingPage(list);
-      break;
-    case 'contact':
-      mainContent.innerHTML = renderContactPage();
-      break;
-    default:
-      mainContent.innerHTML = renderHomePage(list);
+  try {
+    switch (currentPage) {
+      case 'home':
+        mainContent.innerHTML = renderHomePage(list);
+        setPageMeta({
+          title: 'RoyalGoaRide – Best Self Drive Car Rental in Goa | Cheap & Automatic Cars',
+          description: 'Affordable self drive car rental in Goa with manual & automatic cars. Airport delivery, 24/7 support. Book with RoyalGoaRide today.',
+          canonical: 'https://royalgoaride.com/'
+        });
+        break;
+      case 'cars':
+        mainContent.innerHTML = renderVehiclesPage('car', list);
+        setPageMeta({
+          title: 'RoyalGoaRide – Car Rentals in Goa | Automatic & Cheap Cars',
+          description: 'Browse our fleet of cars in Goa. Cheap car rental Goa with automatic and manual options. Airport delivery & 24/7 support.',
+          canonical: 'https://royalgoaride.com/cars'
+        });
+        break;
+      case 'bikes':
+        mainContent.innerHTML = renderVehiclesPage('bike', list);
+        setPageMeta({
+          title: 'RoyalGoaRide – Bike Rentals in Goa | Scooters & Royal Enfield',
+          description: 'Affordable bike rentals in Goa. Explore scooters and Royal Enfield bikes for scenic Goa trips. Easy booking and pickup.',
+          canonical: 'https://royalgoaride.com/bikes'
+        });
+        break;
+      case 'booking':
+        mainContent.innerHTML = renderBookingPage(list);
+        setPageMeta({
+          title: 'RoyalGoaRide – Booking | Self Drive Car Rental Goa',
+          description: 'Book your self drive car in Goa with RoyalGoaRide. Fast WhatsApp booking and station pickup available.',
+          canonical: 'https://royalgoaride.com/booking'
+        });
+        break;
+      case 'contact':
+        mainContent.innerHTML = renderContactPage();
+        setPageMeta({
+          title: 'RoyalGoaRide – Contact | Car Rental in Goa',
+          description: 'Contact RoyalGoaRide for self drive car rentals in Goa. WhatsApp and phone booking available.',
+          canonical: 'https://royalgoaride.com/contact'
+        });
+        break;
+      default:
+        mainContent.innerHTML = renderHomePage(list);
+    }
+  } catch (err) {
+    console.error('renderPage error:', err);
+    // Ensure user sees an error instead of blank page
+    mainContent.innerHTML = '<div class="p-20 text-center text-red-600">Error rendering page. Open console for details.</div>';
+  }
+}
+
+// Utility to set document meta tags for SPA routes
+function setPageMeta({ title, description, canonical }) {
+  try {
+    if (title) document.title = title;
+    let desc = document.querySelector('meta[name="description"]');
+    if (!desc) {
+      desc = document.createElement('meta');
+      desc.name = 'description';
+      document.head.appendChild(desc);
+    }
+    if (description) desc.content = description;
+
+    if (canonical) {
+      let link = document.querySelector('link[rel="canonical"]');
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'canonical';
+        document.head.appendChild(link);
+      }
+      link.href = canonical;
+    }
+  } catch (err) {
+    console.error('setPageMeta error', err);
   }
 }
 
@@ -748,13 +848,15 @@ function renderHomePage(list) {
     <div class="animate-fade-in">
       <section class="hero-section">
         <div class="hero-bg">
-          <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=1920" alt="Goa Beach">
+          <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=1920" alt="Goa beach scenery – RoyalGoaRide" loading="lazy">
         </div>
         <div class="hero-content">
           <div style="max-width: 42rem;">
             <span class="hero-badge">Premium Goa Rentals</span>
             <h1 style="font-size: 3.75rem; font-weight: 900; font-family: 'Playfair Display', serif; margin-bottom: 1.5rem; line-height: 1.25;">
-              Drive the <span class="text-primary">Prime</span> Experience.
+                Drive the <span class="text-primary">Prime</span> Experience.
+              </h1>
+              <h2 class="sr-only">Self drive car rental in Goa — RoyalGoaRide</h2>
             </h1>
             <p style="font-size: 1.25rem; margin-bottom: 2.5rem; color: #e2e8f0; line-height: 1.625; font-weight: 300;">
               Professional car and bike rentals delivered to Madgao Station and across Goa. Luxury, comfort, and transparency guaranteed.
@@ -764,6 +866,15 @@ function renderHomePage(list) {
               <button onclick="navigateTo('bikes')" class="btn-secondary">View Bikes <svg class="ml-3 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></button>
             </div>
           </div>
+        </div>
+        <div class="hero-seo-content max-w-4xl mx-auto mt-8 text-white leading-relaxed">
+          <h2 class="text-2xl font-bold mb-3">Self drive car rental in Goa — Cheap, Automatic, and Convenient</h2>
+          <p>
+            RoyalGoaRide specialises in self drive car rental in Goa, offering both manual and automatic cars for travellers seeking flexibility and comfort. Whether you need a cheap car rental Goa for a budget trip or an automatic car rental Goa for easy coastal driving, our fleet has the right vehicle for you. We provide reliable car rental near Goa airport with timely airport delivery and station pickups, making your arrival hassle-free.
+          </p>
+          <p>
+            Our service focuses on safety, transparent pricing, and 24/7 support. Choose from compact hatchbacks, SUVs, and luxury sedans — all maintained to high standards. Book with RoyalGoaRide Goa for a seamless self-drive experience and explore beaches, heritage sites, and the scenic drives Goa is famous for.
+          </p>
         </div>
         <div class="ai-concierge-box hidden lg:block">
           <div class="glass p-6 rounded-3xl shadow-2xl ai-box-border">
@@ -1084,10 +1195,11 @@ function renderMergedVehicleCard(vehicle) {
     `<div class="transmission-options">${transmissionButtons}</div>` :
     `${bikePrice}<div class="transmission-options">${bikeSelectButton}</div>`;
 
+  const imgUrl = preferWebP(img);
   return `
     <div class="premium-vehicle-card">
       <div class="vehicle-image-container">
-        <img src="${img}" alt="${name}" class="vehicle-image" onerror="this.src='${PLACEHOLDER_IMAGE}'">
+        <img src="${imgUrl}" alt="${name} - ${category} | RoyalGoaRide" class="vehicle-image" loading="lazy" onerror="this.src='${PLACEHOLDER_IMAGE}'">
         <div class="category-badge">${category}</div>
         <div class="deposit-badge">DEPOSIT<br>₹${deposit}</div>
       </div>
@@ -1110,10 +1222,11 @@ function renderVehicleCard(vehicle) {
   const defaultDeposit = vehicle.type === 'car' ? 3000 : 1000;
   const deposit = (vehicle.deposit !== undefined && vehicle.deposit !== null) ? vehicle.deposit : defaultDeposit;
 
+  const imgUrl = preferWebP(img);
   return `
     <div class="vehicle-card ${isDualTransmission ? 'ring-2 ring-blue-400 shadow-lg' : ''}">
       <div class="vehicle-image">
-        <img src="${img}" alt="${name}" onerror="this.src='${PLACEHOLDER_IMAGE}'">
+        <img src="${imgUrl}" alt="${name} - ${category} | RoyalGoaRide" loading="lazy" onerror="this.src='${PLACEHOLDER_IMAGE}'">
         ${isDualTransmission ? '<div class="absolute top-12 right-4 bg-blue-500 text-white px-3 py-1.5 rounded-full shadow-lg text-xs font-bold">DUAL OPTIONS</div>' : ''}
         <div class="absolute top-4 right-4 px-4 py-1.5 rounded-full shadow-sm vehicle-price-badge">
           <span class="text-primary font-bold">₹${vehicle.pricePerDay || 0}</span>
@@ -1337,4 +1450,19 @@ function handleBookingSubmit(event) {
 // ============================================
 // END OF MERGED main.js FILE
 // ============================================
+
+// Safety: ensure renderer functions exist (temporary fallbacks) — they will be overridden by real implementations if present.
+if (typeof renderHomePage !== 'function') {
+  function renderHomePage() { return '<div class="p-20 text-center">Home content unavailable.</div>'; }
+}
+if (typeof renderVehiclesPage !== 'function') {
+  function renderVehiclesPage() { return '<div class="p-20 text-center">Vehicles content unavailable.</div>'; }
+}
+if (typeof renderBookingPage !== 'function') {
+  function renderBookingPage() { return '<div class="p-20 text-center">Booking content unavailable.</div>'; }
+}
+if (typeof renderContactPage !== 'function') {
+  function renderContactPage() { return '<div class="p-20 text-center">Contact content unavailable.</div>'; }
+}
+
 

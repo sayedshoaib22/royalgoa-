@@ -4,12 +4,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoyalGoa Rentals | Premium Car & Bike Rental Goa</title>
+    <title>RoyalGoaRide – Best Self Drive Car Rental in Goa | Cheap & Automatic Cars</title>
+    <meta name="description"
+        content="Affordable self drive car rental in Goa with manual & automatic cars. Airport delivery, 24/7 support. Book with RoyalGoaRide today.">
+    <link rel="canonical" href="https://royalgoaride.com/">
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="RoyalGoaRide">
+    <meta property="og:title" content="RoyalGoaRide – Best Self Drive Car Rental in Goa | Cheap & Automatic Cars">
+    <meta property="og:description"
+        content="Affordable self drive car rental in Goa with manual & automatic cars. Airport delivery, 24/7 support. Book with RoyalGoaRide today.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://royalgoaride.com/">
+    <meta property="og:image" content="https://royalgoaride.com/assets/logo.png">
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@RoyalGoaRide">
+    <meta name="twitter:title" content="RoyalGoaRide – Self Drive Car Rental Goa">
+    <meta name="twitter:description"
+        content="Affordable self drive car rental in Goa with manual & automatic cars. Airport delivery, 24/7 support.">
+    <!-- Search Console verification (replace CONTENT with your token) -->
+    <meta name="google-site-verification" content="REPLACE_WITH_YOUR_TOKEN">
+    <!-- LocalBusiness schema (basic) -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": "RoyalGoaRide",
+            "image": "https://royalgoaride.com/assets/logo.png",
+            "@id": "https://royalgoaride.com/",
+            "url": "https://royalgoaride.com/",
+            "telephone": "+919975356697",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Near Madgao Railway Station",
+                "addressLocality": "Margao",
+                "addressRegion": "Goa",
+                "postalCode": "403601",
+                "addressCountry": "IN"
+            },
+            "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 00:00-23:59",
+            "priceRange": "₹",
+            "sameAs": ["https://www.facebook.com/","https://www.instagram.com/"]
+        }
+        </script>
+    <!-- Google Analytics (GA4) placeholder - replace MEASUREMENT_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-MEASUREMENT_ID');
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap"
         rel="stylesheet">
+    <!-- Fix: use actual CSS filename present in repo (styles.css) -->
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -27,7 +78,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2 cursor-pointer group" onclick="navigateTo('home')">
-                    <img src="assets/logo.png" alt="RoyalGoa logo" class="site-logo site-logo--navbar">
+                    <img src="assets/logo.png" alt="RoyalGoaRide logo" class="site-logo site-logo--navbar">
                 </div>
 
                 <div class="hidden md:flex items-center space-x-8">
@@ -116,7 +167,7 @@
                                     d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
                             </svg>
                         </div>
-                        <img src="assets/logo.png" alt="RoyalGoa logo" class="site-logo site-logo--footer">
+                        <img src="assets/logo.png" alt="RoyalGoaRide logo" class="site-logo site-logo--footer">
                     </div>
                     <p class="text-sm leading-relaxed mb-6">
                         Goa's elite vehicle rental service. Explore the emerald land with unmatched style, comfort, and
@@ -145,11 +196,16 @@
                 <div>
                     <h4 class="text-white font-bold mb-6">Quick Links</h4>
                     <ul class="space-y-4 text-sm">
-                        <li class="hover:text-primary cursor-pointer" onclick="navigateTo('home')">Home</li>
-                        <li class="hover:text-primary cursor-pointer" onclick="navigateTo('cars')">Cars</li>
-                        <li class="hover:text-primary cursor-pointer" onclick="navigateTo('bikes')">Bikes</li>
-                        <li class="hover:text-primary cursor-pointer" onclick="navigateTo('booking')">Booking</li>
-                        <li class="hover:text-primary cursor-pointer" onclick="navigateTo('contact')">Contact</li>
+                        <li class="hover:text-primary"><a href="#home" onclick="navigateTo('home');"
+                                rel="noopener">Home</a></li>
+                        <li class="hover:text-primary"><a href="#cars" onclick="navigateTo('cars');"
+                                rel="noopener">Cars</a></li>
+                        <li class="hover:text-primary"><a href="#bikes" onclick="navigateTo('bikes');"
+                                rel="noopener">Bikes</a></li>
+                        <li class="hover:text-primary"><a href="#booking" onclick="navigateTo('booking');"
+                                rel="noopener">Booking</a></li>
+                        <li class="hover:text-primary"><a href="#contact" onclick="navigateTo('contact');"
+                                rel="noopener">Contact</a></li>
                     </ul>
                 </div>
 
@@ -216,40 +272,7 @@
             class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold">1</span>
     </a>
 
-    <script src="main.js"></script>
-</body>
-nk" rel="noreferrer"
-class="fixed bottom-8 left-8 z-40 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all
-transform hover:scale-110 flex items-center justify-center">
-<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
-    </path>
-</svg>
-<span
-    class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold">1</span>
-</a>
-
-<script src="main.js"></script>
-</body>
-nk" rel="noreferrer"
-        class="fixed bottom-8 left-8 z-40 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all transform hover:scale-110 flex items-center justify-center">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
-            </path>
-        </svg>
-        <span
-            class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold">1</span>
-    </a>
-
-    <script src="main.js"></script>
-</body>
-
-</html>n
-            class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold">1</span>
-    </a>
-
+    <!-- Fix: load non-minified script at bottom so DOM is ready; allows easier debugging -->
     <script src="main.js"></script>
 </body>
 
