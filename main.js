@@ -104,10 +104,10 @@ const vehicles = [
     pricePerDay: 1300,
     deposit: 3000,
     image: 'https://image2url.com/r2/default/images/1771081605318-cf7ecfe1-543f-4a35-8672-53cdda6ce892.jpeg',
-    transmission: 'Manual / Automatic',
+    transmission: 'Manual',
     fuel: 'Petrol',
     seats: 5,
-    features: ['Manual/Auto Available', 'Spacious Cabin', '360 Camera', 'Cruise Control']
+    features: ['Manual Available', 'Spacious Cabin', '360 Camera', 'Cruise Control']
   },
   {
     id: 'baleno',
@@ -153,13 +153,26 @@ const vehicles = [
     name: 'Maruti Brezza',
     type: 'car',
     category: 'Compact SUV',
-    pricePerDay: 2300,
+    pricePerDay: 2000,
     deposit: 3000,
     image: 'https://image2url.com/r2/default/images/1771080613820-4e08e3eb-6cf3-456d-af67-d620cf20afa2.jpeg',
-    transmission: 'Manual / Automatic',
+    transmission: 'Manual ',
     fuel: 'Petrol',
     seats: 5,
-    features: ['Manual/Auto Available', 'Sunroof', 'High Ground Clearance', 'Smart Hybrid']
+    features: ['Manual  Available', 'Sunroof', 'High Ground Clearance', 'Smart Hybrid']
+  },
+  {
+    id: 'brezza',
+    name: 'Maruti Brezza',
+    type: 'car',
+    category: 'Compact SUV',
+    pricePerDay: 2500,
+    deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771080613820-4e08e3eb-6cf3-456d-af67-d620cf20afa2.jpeg',
+    transmission: 'Automatic',
+    fuel: 'Petrol',
+    seats: 5,
+    features: ['Auto Available', 'Sunroof', 'High Ground Clearance', 'Smart Hybrid']
   },
   {
     id: 'creta',
@@ -195,10 +208,10 @@ const vehicles = [
     pricePerDay: 2300,
     deposit: 3000,
     image: 'https://image2url.com/r2/default/images/1771083423558-6d9933ca-f849-46ea-8f35-24715d02f016.jpeg',
-    transmission: 'Manual / Automatic',
+    transmission: 'Manual ',
     fuel: 'Petrol',
     seats: 7,
-    features: ['Manual/Auto Available', 'Perfect for Families', 'Rear AC Vents', 'Flexible Seating']
+    features: ['Manual  Available', 'Perfect for Families', 'Rear AC Vents', 'Flexible Seating']
   },
   {
     id: 'ertiga',
@@ -472,7 +485,7 @@ function getDemoVehicles() {
       transmission: 'Automatic',
       fuel: 'Petrol',
       seats: 5,
-      features: ['Manual/Auto Available', 'Sporty Drive', 'Keyless Entry', 'Bluetooth']
+      features: ['Manual  Available', 'Sporty Drive', 'Keyless Entry', 'Bluetooth']
     },
     {
       id: 'demo-baleno',
@@ -484,7 +497,7 @@ function getDemoVehicles() {
       transmission: 'Automatic',
       fuel: 'Petrol',
       seats: 5,
-      features: ['Manual/Auto Available', 'Spacious Cabin', '360 Camera', 'Cruise Control']
+      features: ['Manual  Available', 'Spacious Cabin', '360 Camera', 'Cruise Control']
     },
     {
       id: 'demo-hero',
@@ -643,12 +656,16 @@ function handleScroll() {
 // ============================================
 
 function selectVehicle(vehicleId, transmission) {
-  const list = typeof vehicles !== 'undefined' ? vehicles : [];
-  selectedVehicle = list.find(v => v.id === vehicleId) || null;
   if (transmission) {
     bookingFormData.transmission = transmission;
   }
   bookingStep = 1;
+
+  // Use merged vehicle (grouped by id) so selectedVehicle contains transmissions array
+  const list = typeof vehicles !== 'undefined' ? vehicles : [];
+  const merged = mergeVehiclesByName(list);
+  selectedVehicle = merged.find(v => v.id === vehicleId) || null;
+
   navigateTo('booking');
 }
 
@@ -656,45 +673,51 @@ function selectVehicle(vehicleId, transmission) {
 function mergeVehiclesByName(vehiclesList) {
   const merged = {};
 
-  vehiclesList.forEach(vehicle => {
+  vehiclesList.forEach(raw => {
+    const vehicle = { ...raw };
+    // normalize id and type and name
+    vehicle.id = (vehicle.id || '').toString().trim();
+    vehicle.type = (vehicle.type || '').toString().trim().toLowerCase();
+    if (vehicle.name && typeof vehicle.name === 'string') vehicle.name = vehicle.name.trim();
+
     const key = `${vehicle.type}_${vehicle.id}`;
     if (!merged[key]) {
       merged[key] = {
         ...vehicle,
+        // ensure consistent casing for type
+        type: vehicle.type,
         transmissions: []
       };
     }
 
-    // Clean and parse transmission type
-    let transType = (vehicle.transmission || '').trim();
+    // Do not create transmission entries for bikes/scooters
+    if (vehicle.type !== 'car') return;
 
-    // Handle "X Automatic Only" format
-    if (transType.endsWith(' Only')) {
-      transType = transType.replace(' Only', '').trim();
-    }
+    // Clean and normalize transmission string
+    let transType = (vehicle.transmission || '').toString().replace(/\s+/g, ' ').trim();
+    // Normalize common variants
+    transType = transType.replace(/Automatic Only/i, 'Automatic');
+    transType = transType.replace(/Manual Only/i, 'Manual');
+    // Some entries may use commas or slashes
+    const parts = transType.split(/\s*\/[\s]*|,|\s+and\s+/i).map(p => p.trim()).filter(Boolean);
 
-    // For dual transmission types, split and add both
-    if (transType.includes(' / ')) {
-      const parts = transType.split(' / ').map(p => p.trim());
-      parts.forEach(part => {
-        if (part && !merged[key].transmissions.some(t => t.type === part)) {
-          merged[key].transmissions.push({
-            type: part,
-            price: vehicle.pricePerDay,
-            originalVehicle: vehicle
-          });
-        }
-      });
-    } else {
-      // Single transmission type
-      if (transType && !merged[key].transmissions.some(t => t.type === transType)) {
-        merged[key].transmissions.push({
-          type: transType,
-          price: vehicle.pricePerDay,
-          originalVehicle: vehicle
-        });
+    if (parts.length === 0) return;
+
+    parts.forEach(partRaw => {
+      let part = partRaw.replace(/\s+/g, ' ').trim();
+      // Capitalize first letter
+      part = part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+      if (!part) return;
+
+      // If transmission already exists, keep the lowest price
+      const existing = merged[key].transmissions.find(t => t.type === part);
+      const price = Number(vehicle.pricePerDay) || 0;
+      if (existing) {
+        if (price && price < existing.price) existing.price = price;
+      } else {
+        merged[key].transmissions.push({ type: part, price });
       }
-    }
+    });
   });
 
   return Object.values(merged);
@@ -1096,7 +1119,7 @@ function renderVehicleCard(vehicle) {
   const img = getVehicleImage(vehicle);
   const name = (vehicle.name || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   const category = (vehicle.category || '').replace(/</g, '&lt;');
-  const isDualTransmission = vehicle.transmission === 'Manual / Automatic';
+  const isDualTransmission = vehicle.transmission === 'Manual ';
   const defaultDeposit = vehicle.type === 'car' ? 3000 : 1000;
   const deposit = (vehicle.deposit !== undefined && vehicle.deposit !== null) ? vehicle.deposit : defaultDeposit;
 
