@@ -1208,6 +1208,20 @@ function renderMergedVehicleCard(vehicle) {
         ${specsGrid ? `<div class="specs-grid">${specsGrid}</div>` : ''}
         ${actionSection}
         ${isCar ? `<div class="price-disclaimer">* Per day price excludes fuel</div>` : ''}
+        <div class="vehicle-action-buttons">
+          <button class="btn-vehicle btn-whatsapp-small" onclick="handleWhatsAppClick(event)" title="Chat on WhatsApp">
+            <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004c-1.579 0-3.051.46-4.315 1.338l-.31-.156-3.215-.666.679 3.126.156.31c-.956 1.294-1.466 2.93-1.466 4.62 0 4.446 3.612 8.057 8.06 8.057 2.159 0 4.19-.822 5.718-2.32 1.528-1.499 2.37-3.55 2.37-5.738 0-4.45-3.612-8.057-8.06-8.057M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0"/>
+            </svg>
+            WhatsApp
+          </button>
+          <button class="btn-vehicle btn-call-small" onclick="handleCallClick(event)" title="Call Now">
+            <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+              <path d="M16.92v3.5c0 .88-.72 1.58-1.6 1.58-.65 0-1.27-.28-1.7-.74-.63-.68-1.19-1.44-1.63-2.27l-3.57-7.89c-.16-.37-.15-.79.01-1.16.17-.37.46-.64.82-.76l2.98-.84c.49-.14.98.02 1.31.42.49.58 1.14 1.08 1.86 1.41.55.25 1.04.65 1.39 1.15.35.5.57 1.08.65 1.68v4.62zm-7-1.5v-4.62c-.08-.6-.3-1.18-.65-1.68-.35-.5-.84-.9-1.39-1.15-.72-.33-1.37-.83-1.86-1.41-.33-.4-.82-.56-1.31-.42l-2.98.84c-.36.12-.65.39-.82.76-.16.37-.17.79-.01 1.16l3.57 7.89c.44.83 1 1.59 1.63 2.27.43.46 1.05.74 1.7.74.88 0 1.6-.7 1.6-1.58"/>
+            </svg>
+            Call
+          </button>
+        </div>
       </div>
     </div>
   `;
@@ -1256,6 +1270,20 @@ function renderVehicleCard(vehicle) {
         <p class="deposit-badge">💰 Security Deposit: ₹${deposit}</p>
         <div style="margin-top: auto;">
           <button onclick="selectVehicle('${(vehicle.id || '').replace(/'/g, "\\'")}')" class="vehicle-card-btn">Select Vehicle <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+          <div class="vehicle-action-buttons">
+            <button class="btn-vehicle btn-whatsapp-small" onclick="handleWhatsAppClick(event)" title="Chat on WhatsApp">
+              <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004c-1.579 0-3.051.46-4.315 1.338l-.31-.156-3.215-.666.679 3.126.156.31c-.956 1.294-1.466 2.93-1.466 4.62 0 4.446 3.612 8.057 8.06 8.057 2.159 0 4.19-.822 5.718-2.32 1.528-1.499 2.37-3.55 2.37-5.738 0-4.45-3.612-8.057-8.06-8.057M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0"/>
+              </svg>
+              WhatsApp
+            </button>
+            <button class="btn-vehicle btn-call-small" onclick="handleCallClick(event)" title="Call Now">
+              <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                <path d="M16.92v3.5c0 .88-.72 1.58-1.6 1.58-.65 0-1.27-.28-1.7-.74-.63-.68-1.19-1.44-1.63-2.27l-3.57-7.89c-.16-.37-.15-.79.01-1.16.17-.37.46-.64.82-.76l2.98-.84c.49-.14.98.02 1.31.42.49.58 1.14 1.08 1.86 1.41.55.25 1.04.65 1.39 1.15.35.5.57 1.08.65 1.68v4.62zm-7-1.5v-4.62c-.08-.6-.3-1.18-.65-1.68-.35-.5-.84-.9-1.39-1.15-.72-.33-1.37-.83-1.86-1.41-.33-.4-.82-.56-1.31-.42l-2.98.84c-.36.12-.65.39-.82.76-.16.37-.17.79-.01 1.16l3.57 7.89c.44.83 1 1.59 1.63 2.27.43.46 1.05.74 1.7.74.88 0 1.6-.7 1.6-1.58"/>
+              </svg>
+              Call
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1445,6 +1473,186 @@ function handleBookingSubmit(event) {
 
   bookingStep = 2;
   renderPage();
+}
+
+// ============================================
+// CALL AND WHATSAPP BUTTON FUNCTIONALITY
+// ============================================
+
+const PHONE_NUMBER = '+91 99753 56697';
+const PHONE_NUMBER_FORMATTED = '919975356697';
+const WHATSAPP_MESSAGE = 'Hello RoyalGoaRide, I want to book a car in Goa.';
+
+/**
+ * Handle WhatsApp button click with analytics tracking
+ */
+function handleWhatsAppClick(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  // Track event in Google Analytics
+  trackAnalyticsEvent('whatsapp_click', {
+    'button_location': getButtonLocation(event),
+    'timestamp': new Date().toISOString(),
+    'page': getCurrentPage()
+  });
+
+  // Remove any extra spaces and encode properly
+  const message = WHATSAPP_MESSAGE.trim();
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappURL = `https://wa.me/${PHONE_NUMBER_FORMATTED}?text=${encodedMessage}`;
+
+  try {
+    // Open WhatsApp in new tab to avoid blocking
+    window.open(whatsappURL, '_blank', 'noopener,noreferrer');
+  } catch (error) {
+    console.error('WhatsApp link error:', error);
+    alert(`Open WhatsApp and message our team at ${PHONE_NUMBER}`);
+  }
+}
+
+/**
+ * Handle Call button click with analytics tracking
+ */
+function handleCallClick(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  // Track event in Google Analytics
+  trackAnalyticsEvent('call_click', {
+    'button_location': getButtonLocation(event),
+    'timestamp': new Date().toISOString(),
+    'page': getCurrentPage()
+  });
+
+  // On mobile, initiate call; on desktop, show alert
+  const isPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  if (isPhone) {
+    window.location.href = `tel:${PHONE_NUMBER_FORMATTED}`;
+  } else {
+    // Show user-friendly message on desktop
+    showCallAlert();
+  }
+}
+
+/**
+ * Track custom event in Google Analytics 4
+ */
+function trackAnalyticsEvent(eventName, eventData = {}) {
+  try {
+    // Check if gtag is available
+    if (typeof gtag !== 'undefined') {
+      gtag('event', eventName, eventData);
+      console.log(`Analytics event tracked: ${eventName}`, eventData);
+    } else {
+      console.warn('Google Analytics (gtag) not initialized');
+    }
+  } catch (error) {
+    console.error('Analytics tracking error:', error);
+  }
+}
+
+/**
+ * Determine button location for analytics
+ */
+function getButtonLocation(event) {
+  if (!event) return 'floating';
+
+  const target = event.target.closest('button');
+  if (!target) return 'unknown';
+
+  if (target.id === 'whatsapp-btn' || target.id === 'call-btn') {
+    return 'floating';
+  } else if (target.id === 'navbar-whatsapp' || target.id === 'navbar-call') {
+    return 'navbar';
+  } else if (target.classList.contains('btn-vehicle')) {
+    return 'vehicle_card';
+  }
+
+  return 'other';
+}
+
+/**
+ * Get current page for analytics
+ */
+function getCurrentPage() {
+  const currentPage = document.body.getAttribute('data-page') || 'home';
+  return currentPage;
+}
+
+/**
+ * Show call alert on desktop browsers
+ */
+function showCallAlert() {
+  const message = `Call RoyalGoaRide now!\n\n📞 ${PHONE_NUMBER}\n\nOur team is ready to assist you with the best car rental experience in Goa.`;
+  alert(message);
+
+  // Optionally copy to clipboard
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(PHONE_NUMBER);
+  }
+}
+
+/**
+ * Initialize call and WhatsApp buttons
+ * Call this function when DOM is loaded
+ */
+function initializeContactButtons() {
+  // Verify buttons exist and are accessible
+  const floatingWhatsApp = document.getElementById('whatsapp-btn');
+  const floatingCall = document.getElementById('call-btn');
+
+  if (floatingWhatsApp) {
+    floatingWhatsApp.addEventListener('click', handleWhatsAppClick);
+  }
+
+  if (floatingCall) {
+    floatingCall.addEventListener('click', handleCallClick);
+  }
+
+  console.log('Contact buttons initialized successfully');
+}
+
+/**
+ * Add contact buttons to vehicle cards dynamically
+ * Call this when rendering vehicle cards
+ */
+function addContactButtonsToVehicleCard(cardElement, vehicleData = null) {
+  // Check if buttons already exist
+  if (cardElement.querySelector('.vehicle-action-buttons')) {
+    return;
+  }
+
+  const buttonsHTML = `
+        <div class="vehicle-action-buttons">
+            <button class="btn-vehicle btn-whatsapp-small" onclick="handleWhatsAppClick(event)" title="Chat on WhatsApp">
+                <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004c-1.579 0-3.051.46-4.315 1.338l-.31-.156-3.215-.666.679 3.126.156.31c-.956 1.294-1.466 2.93-1.466 4.62 0 4.446 3.612 8.057 8.06 8.057 2.159 0 4.19-.822 5.718-2.32 1.528-1.499 2.37-3.55 2.37-5.738 0-4.45-3.612-8.057-8.06-8.057M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0\"/>
+                </svg>
+                WhatsApp
+            </button>
+            <button class="btn-vehicle btn-call-small" onclick="handleCallClick(event)" title="Call Now">
+                <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                    <path d="M16.92v3.5c0 .88-.72 1.58-1.6 1.58-.65 0-1.27-.28-1.7-.74-.63-.68-1.19-1.44-1.63-2.27l-3.57-7.89c-.16-.37-.15-.79.01-1.16.17-.37.46-.64.82-.76l2.98-.84c.49-.14.98.02 1.31.42.49.58 1.14 1.08 1.86 1.41.55.25 1.04.65 1.39 1.15.35.5.57 1.08.65 1.68v4.62zm-7-1.5v-4.62c-.08-.6-.3-1.18-.65-1.68-.35-.5-.84-.9-1.39-1.15-.72-.33-1.37-.83-1.86-1.41-.33-.4-.82-.56-1.31-.42l-2.98.84c-.36.12-.65.39-.82.76-.16.37-.17.79-.01 1.16l3.57 7.89c.44.83 1 1.59 1.63 2.27.43.46 1.05.74 1.7.74.88 0 1.6-.7 1.6-1.58\"/>
+                </svg>
+                Call
+            </button>
+        </div>
+    `;
+
+  cardElement.insertAdjacentHTML('beforeend', buttonsHTML);
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeContactButtons);
+} else {
+  initializeContactButtons();
 }
 
 // ============================================
