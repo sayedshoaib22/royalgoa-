@@ -1516,28 +1516,8 @@ function handleWhatsAppClick(event) {
 /**
  * Handle Call button click with analytics tracking
  */
-function handleCallClick(event) {
-  if (event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  // Track event in Google Analytics
-  trackAnalyticsEvent('call_click', {
-    'button_location': getButtonLocation(event),
-    'timestamp': new Date().toISOString(),
-    'page': getCurrentPage()
-  });
-
-  // On mobile, initiate call; on desktop, show alert
-  const isPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-  if (isPhone) {
-    window.location.href = `tel:${PHONE_NUMBER_FORMATTED}`;
-  } else {
-    // Show user-friendly message on desktop
-    showCallAlert();
-  }
+function handleCallClick() {
+  window.location.href = "tel:9975356697";
 }
 
 /**
