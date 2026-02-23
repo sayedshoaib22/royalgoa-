@@ -1059,7 +1059,7 @@ function renderBookingPage(list) {
               </div>
               <div>
                 <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Phone</label>
-                <input type="tel" required placeholder="+91 99..." id="booking-phone" class="input-field" value="${(bookingFormData.phone || '').replace(/"/g, '&quot;')}">
+                <input type="tel" required placeholder="99753 56697" id="booking-phone" class="input-field" value="${(bookingFormData.phone || '').replace(/"/g, '&quot;')}">
               </div>
             </div>
             <div>
@@ -1118,8 +1118,8 @@ function renderContactPage() {
     <div class="pt-32 pb-24 px-4 max-w-7xl mx-auto animate-fade-in">
       ${renderSectionHeading('Connect With Us', 'Contact', true)}
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-        ${renderContactCard('Concierge', ' 99753 56697', 'phone')}
-        ${renderContactCard('Corporate', 'bookings@primegoa.com', 'mail')}
+        ${renderContactCard('Concierge', '99753 56697', 'phone')}
+        ${renderContactCard('Corporate', 'bookings@royalgoaride.com', 'mail')}
         ${renderContactCard('Location', 'Madgao Railway Station, Goa', 'map-pin')}
       </div>
       <div class="contact-map">
@@ -1335,7 +1335,7 @@ function renderContactCard(title, info, icon) {
     <div class="glass p-10 rounded-3xl text-center hover:border-primary transition-colors contact-card">
       <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-primary contact-card-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">${svgPath}</svg></div>
       <h3 class="font-bold mb-2">${(title || '').replace(/</g, '&lt;')}</h3>
-      <p class="${extraClass}" style="color: var(--slate-500); ${extraStyle}">${(info || '').replace(/</g, '&lt;')}</p>
+      <p class="${extraClass}" style="color: var(--slate-500); ${extraStyle}"><a href="${icon === 'phone' ? 'tel:9975356697' : ''}">${(info || '').replace(/</g, '&lt;')}</a></p>
     </div>
   `;
 }
@@ -1468,7 +1468,7 @@ function handleBookingSubmit(event) {
     window.location.href = whatsappURL;
   } catch (err) {
     console.error('Navigation to WhatsApp failed', err);
-    alert('Unable to open WhatsApp automatically. Please contact +919975356697 with your booking details.');
+    alert('Unable to open WhatsApp automatically. Please contact 99753 56697 with your booking details.');
   }
 
   bookingStep = 2;
@@ -1479,8 +1479,8 @@ function handleBookingSubmit(event) {
 // CALL AND WHATSAPP BUTTON FUNCTIONALITY
 // ============================================
 
-const PHONE_NUMBER = ' 99753 56697';
-const PHONE_NUMBER_FORMATTED = '919975356697';
+const PHONE_NUMBER = '99753 56697';
+const PHONE_NUMBER_FORMATTED = '+919975356697';
 const WHATSAPP_MESSAGE = 'Hello RoyalGoaRide, I want to book a car in Goa.';
 
 /**
@@ -1569,12 +1569,12 @@ function getCurrentPage() {
  * Show call alert on desktop browsers
  */
 function showCallAlert() {
-  const message = `Call RoyalGoaRide now!\n\n📞 ${PHONE_NUMBER}\n\nOur team is ready to assist you with the best car rental experience in Goa.`;
+  const message = `Call RoyalGoaRide now!\n\n📞 99753 56697\n\nOur team is ready to assist you with the best car rental experience in Goa.`;
   alert(message);
 
   // Optionally copy to clipboard
   if (navigator.clipboard) {
-    navigator.clipboard.writeText(PHONE_NUMBER);
+    navigator.clipboard.writeText('99753 56697');
   }
 }
 
