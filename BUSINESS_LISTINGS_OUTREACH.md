@@ -9,7 +9,7 @@ RoyalGoaRide
 Near Madgao Railway Station, Margao, Goa 403601, India
 
 ### Phone:
-+91 99753 56697
+ 99753 56697
 
 ### Website:
 https://royalgoaride.com
@@ -215,7 +215,7 @@ Would you be open to exploring this? I'm confident your audience will love havin
 Best regards,
 [Your Name]
 RoyalGoaRide
-+91 99753 56697
+ 99753 56697
 bookingsroyalgoa@gmail.com
 
 ---

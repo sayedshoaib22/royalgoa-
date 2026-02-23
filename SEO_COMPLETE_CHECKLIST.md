@@ -192,7 +192,7 @@ This document outlines the comprehensive SEO overhaul completed for RoyalGoaRide
 ### Business Information
 - [x] Business name consistency: "RoyalGoaRide"
 - [x] Address: Near Madgao Railway Station, Margao, Goa 403601
-- [x] Phone: +91 99753 56697 (Click-to-call implemented)
+- [x] Phone:  99753 56697 (Click-to-call implemented)
 - [x] Email: bookingsroyalgoa@gmail.com
 - [x] Website: https://royalgoaride.com
 - [x] Business Hours: 24/7 (00:00-23:59)

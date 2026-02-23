@@ -1118,7 +1118,7 @@ function renderContactPage() {
     <div class="pt-32 pb-24 px-4 max-w-7xl mx-auto animate-fade-in">
       ${renderSectionHeading('Connect With Us', 'Contact', true)}
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-        ${renderContactCard('Concierge', '+91 99753 56697', 'phone')}
+        ${renderContactCard('Concierge', ' 99753 56697', 'phone')}
         ${renderContactCard('Corporate', 'bookings@primegoa.com', 'mail')}
         ${renderContactCard('Location', 'Madgao Railway Station, Goa', 'map-pin')}
       </div>
@@ -1479,7 +1479,7 @@ function handleBookingSubmit(event) {
 // CALL AND WHATSAPP BUTTON FUNCTIONALITY
 // ============================================
 
-const PHONE_NUMBER = '+91 99753 56697';
+const PHONE_NUMBER = ' 99753 56697';
 const PHONE_NUMBER_FORMATTED = '919975356697';
 const WHATSAPP_MESSAGE = 'Hello RoyalGoaRide, I want to book a car in Goa.';
 
