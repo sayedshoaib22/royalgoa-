@@ -38,7 +38,7 @@
         gtag('config', 'G-MZLZTPZ5C8');
     </script>
 
-    <!-- LocalBusiness Schema -->
+    <!-- LocalBusiness Schema with Review -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -60,27 +60,30 @@
         "sameAs": [
             "https://www.instagram.com/royalgoaride",
             "https://www.facebook.com/royalgoaride"
-        ],
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "bestRating": "5",
-            "worstRating": "1",
-            "reviewCount": "247"
+        ]
+    }
+    </script>
+
+    <!-- Review Schema with itemReviewed -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Review",
+        "itemReviewed": {
+            "@type": "LocalBusiness",
+            "name": "Royal Goa Ride",
+            "url": "https://royalgoaride.com"
         },
-        "review": {
-            "@type": "Review",
-            "author": {
-                "@type": "Person",
-                "name": "Rahul Sharma"
-            },
-            "datePublished": "2026-01-15",
-            "reviewBody": "Outstanding car rental service! The booking process was quick and hassle-free. Car was spotlessly clean and in excellent condition. The team provided great local driving tips for Goa. Highly recommended for all travelers!",
-            "reviewRating": {
-                "@type": "Rating",
-                "ratingValue": "5",
-                "bestRating": "5"
-            }
+        "author": {
+            "@type": "Person",
+            "name": "Rahul Sharma"
+        },
+        "datePublished": "2026-01-15",
+        "reviewBody": "Outstanding car rental service! The booking process was quick and hassle-free. Car was spotlessly clean and in excellent condition. The team provided great local driving tips for Goa. Highly recommended for all travelers!",
+        "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5",
+            "bestRating": "5"
         }
     }
     </script>
