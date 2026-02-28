@@ -18,6 +18,12 @@
     <meta name="robots" content="index, follow, max-image-preview:large">
 
     <link rel="canonical" href="https://royalgoaride.com/">
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap"
+        rel="stylesheet">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Best Self Drive Car Rental in Goa | RoyalGoaRide">
@@ -129,205 +135,219 @@
         </script>
 </head>
 
-<body class="bg-slate-50 text-slate-900 transition-colors duration-300">
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center z-[100]">
-        <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-8"></div>
-        <div class="text-white font-serif text-3xl font-black tracking-widest animate-pulse">
-            RoyalGoa<span class="text-primary">.</span>
-        </div>
+<body>
+
+    <!-- ═══ LOADING SCREEN ═══ -->
+    <div id="loading-screen">
+        <div class="loader-ring"></div>
+        <div class="loader-brand">Royal<span>Goa</span>Ride</div>
+        <div class="loader-sub">Loading Your Goa Experience…</div>
     </div>
 
-    <!-- Navbar -->
-    <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-300 bg-transparent py-5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-2 cursor-pointer group" onclick="navigateTo('home')">
-                    <img src="assets/og-imag.png" alt="RoyalGoaRide logo" class="site-logo site-logo--navbar">
-                </div>
-
-                <div class="hidden md:flex items-center space-x-8">
-                    <button onclick="navigateTo('home')"
-                        class="nav-link text-sm font-bold uppercase tracking-widest transition-colors text-slate-800 hover:text-primary"
-                        data-page="home">Home</button>
-                    <button onclick="navigateTo('cars')"
-                        class="nav-link text-sm font-bold uppercase tracking-widest transition-colors text-slate-600 hover:text-primary"
-                        data-page="cars">Cars</button>
-                    <button onclick="navigateTo('bikes')"
-                        class="nav-link text-sm font-bold uppercase tracking-widest transition-colors text-slate-600 hover:text-primary"
-                        data-page="bikes">Bikes</button>
-                    <button onclick="navigateTo('booking')"
-                        class="nav-link text-sm font-bold uppercase tracking-widest transition-colors text-slate-600 hover:text-primary"
-                        data-page="booking">Booking</button>
-                    <button onclick="navigateTo('contact')"
-                        class="nav-link text-sm font-bold uppercase tracking-widest transition-colors text-slate-600 hover:text-primary"
-                        data-page="contact">Contact</button>
-                    <button onclick="toggleDarkMode()" id="theme-toggle"
-                        class="p-2 rounded-full bg-slate-100 transition-colors">
-                        <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
-                            </path>
-                        </svg>
-                    </button>
-                    <button onclick="navigateTo('booking')"
-                        class="bg-primary hover:bg-primary-dark text-white px-6 py-2.5 rounded-full font-bold transition-all transform hover:scale-105">
-                        Book Now
-                    </button>
-                </div>
-
-                <div class="md:hidden flex items-center space-x-4">
-                    <button onclick="toggleDarkMode()" id="theme-toggle-mobile">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
-                            </path>
-                        </svg>
-                    </button>
-                    <button onclick="toggleMobileMenu()" id="mobile-menu-btn">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                </div>
+    <!-- ═══ NAVBAR ═══ -->
+    <nav id="navbar">
+        <div class="nav-inner">
+            <a class="nav-logo" href="#hero">
+                <img src="assets/og-imag.png" alt="Self Drive Car Rental in Goa by RoyalGoaRide" class="logo-img">
+            </a>
+            <div class="nav-links" id="nav-links">
+                <a href="#hero" class="nav-link">Home</a>
+                <a href="#fleet" class="nav-link">Fleet</a>
+                <a href="#trips" class="nav-link">Trips</a>
+                <a href="#booking" class="nav-link">Book</a>
+                <a href="#contact" class="nav-link">Contact</a>
             </div>
-
-            <div class="hero-ctas">
-                <a href="#fleet" class="btn-primary-hero">
-                    <span>Explore Fleet</span>
-                    <i class="bi bi-arrow-right-circle"></i>
-                </a>
+            <div class="nav-actions">
                 <a href="https://wa.me/919975356697?text=Hi%2C%20I%20want%20to%20book%20a%20car" target="_blank"
-                    class="btn-ghost-hero">
-                    <i class="bi bi-whatsapp"></i>
-                    <span>Book on WhatsApp</span>
-                </a>
+                    class="nav-cta-wa"><i class="bi bi-whatsapp"></i> WhatsApp</a>
+                <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
-
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden glass border-t border-slate-200 hidden">
-            <div class="px-4 pt-4 pb-6 space-y-2">
-                <button onclick="navigateTo('home'); toggleMobileMenu();"
-                    class="block w-full text-left px-4 py-3 text-lg font-bold border-b border-slate-100">Home</button>
-                <button onclick="navigateTo('cars'); toggleMobileMenu();"
-                    class="block w-full text-left px-4 py-3 text-lg font-bold border-b border-slate-100">Cars</button>
-                <button onclick="navigateTo('bikes'); toggleMobileMenu();"
-                    class="block w-full text-left px-4 py-3 text-lg font-bold border-b border-slate-100">Bikes</button>
-                <button onclick="navigateTo('booking'); toggleMobileMenu();"
-                    class="block w-full text-left px-4 py-3 text-lg font-bold border-b border-slate-100">Booking</button>
-                <button onclick="navigateTo('contact'); toggleMobileMenu();"
-                    class="block w-full text-left px-4 py-3 text-lg font-bold border-b border-slate-100">Contact</button>
-                <div class="pt-4">
-                    <button onclick="navigateTo('booking'); toggleMobileMenu();"
-                        class="w-full bg-primary text-white py-4 rounded-xl font-bold">
-                        Book Now
-                    </button>
-                </div>
-            </div>
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="#hero" class="mob-link" onclick="closeMobileMenu()">Home</a>
+            <a href="#fleet" class="mob-link" onclick="closeMobileMenu()">Fleet</a>
+            <a href="#trips" class="mob-link" onclick="closeMobileMenu()">Trips</a>
+            <a href="#booking" class="mob-link" onclick="closeMobileMenu()">Book Now</a>
+            <a href="#contact" class="mob-link" onclick="closeMobileMenu()">Contact</a>
         </div>
     </nav>
 
-    <!-- Main Content Container -->
-    <main id="main-content">
-        <section class="bg-white py-20">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 class="text-4xl md:text-5xl font-serif font-black mb-6 text-slate-900">Self Drive Car Rental in Goa
-                </h1>
+    <!-- ═══ SECTION 1: CINEMATIC HERO ═══ -->
+    <section id="hero" class="hero-section" aria-label="RoyalGoaRide — Best Self Drive Car Rental in Goa">
 
-                <p class="text-lg text-slate-700 mb-6">Royal Goa Ride offers affordable and reliable self drive car
-                    rental in Goa, with both automatic and manual cars available across our fleet. Whether you're
-                    arriving at the airport, getting off the train at Madgaon station, or already in Calangute or Baga,
-                    our instant WhatsApp booking makes pickup and delivery seamless.</p>
+        <!-- ── Cinematic video background ── -->
+        <div class="hero-video-wrap" aria-hidden="true">
+            <video class="hero-video" autoplay muted loop playsinline
+                poster="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80">
+                <source src="https://cdn.coverr.co/videos/coverr-goa-beach-driving-7472/1080p.mp4" type="video/mp4">
+            </video>
+            <!-- Layered cinematic overlays -->
+            <div class="hero-overlay-base"></div>
+            <div class="hero-overlay-vignette"></div>
+            <div class="hero-overlay-scanlines"></div>
+            <div class="hero-overlay-neon-leak"></div>
+        </div>
 
-                <section id="seo-content" class="prose max-w-4xl text-slate-700">
-                    <p>Planning to explore Goa on your own terms? Self drive car rental in Goa gives you the freedom to
-                        discover beaches, forts, and hidden hilltop viewpoints at your own pace. Royal Goa Ride
-                        specializes in short and long-term rentals, offering well-maintained vehicles with clear pricing
-                        and quick support. Our fleet includes compact hatchbacks ideal for narrow coastal roads,
-                        comfortable sedans for longer trips, and automatic models for those who prefer ease of driving
-                        in traffic.</p>
+        <!-- ── Floating particles ── -->
+        <div class="hero-particles" id="hero-particles" aria-hidden="true"></div>
 
-                    <p>Automatic & Manual Cars — We understand travel preferences change. Our inventory includes both
-                        automatic and manual transmission cars such as the Maruti Swift, Hyundai i20, Baleno and other
-                        popular models. Automatic cars reduce driver fatigue and are great for tourists who want a
-                        relaxed drive across Goa. Manual cars are budget-friendly and widely available for travelers
-                        seeking the lowest daily rates.</p>
+        <!-- ── TOP BAR: location tag ── -->
+        <div class="hero-location-bar" aria-hidden="true">
+            <span class="hero-loc-dot"></span>
+            <span>Margao, Goa · India</span>
+            <span class="hero-loc-line"></span>
+            <span>Available 24/7</span>
+        </div>
 
-                    <p>WhatsApp Booking & Fast Support — Bookings through WhatsApp are instant and reliable. Send us a
-                        message with your travel dates, pickup location, and preferred car model. Our reservations team
-                        will confirm availability, share photos of the vehicle, and arrange delivery. We provide 24/7
-                        support for roadside assistance, local recommendations, and changes to your booking.</p>
+        <!-- ── MAIN CONTENT ── -->
+        <div class="hero-content">
 
-                    <p>Why Royal Goa Ride Is The Best Choice — We focus on transparency and guest experience. Vehicles
-                        are inspected before every rental and cleaned thoroughly. Our team handles airport and railway
-                        station handovers, explains vehicle features, and helps with local driving tips. Transparent
-                        security deposit policies and quick refunds make renting simple. Positive customer reviews
-                        highlight punctual delivery, friendly staff, and well-maintained cars.</p>
+            <!-- Kicker label -->
+            <p class="hero-kicker" aria-label="Category">
+                <span class="kicker-bar"></span>
+                Self-Drive Car Rental
+                <span class="kicker-bar"></span>
+            </p>
 
-                    <p>Goa Travel Tips — When driving in Goa, plan for narrow lanes in older villages and keep speed
-                        modest on wet roads during monsoon months. Parking at popular beaches can fill up quickly;
-                        arrive early for best spots. Carry a copy of your driving license, ID, and reservation details
-                        while driving. For longer trips, plan fuel stops and check local timings for attractions. If
-                        you're driving a manual car, take a few minutes to get comfortable with the clutch and gear
-                        positions before heading out.</p>
+            <!-- Giant headline -->
+            <h1 class="hero-title" aria-label="Explore Goa Your Way">
+                <span class="ht-line ht-explore">Explore</span>
+                <span class="ht-line ht-goa"><em class="goa-word">Goa</em></span>
+                <span class="ht-line ht-yourway">Your&nbsp;Way</span>
+            </h1>
 
-                    <p>Local Attractions & Routes — A few recommended drives include the Calangute–Baga beach stretch,
-                        the Chapora Fort sunrise loop, and a scenic south Goa coastal run toward Palolem. For a day
-                        trip, consider a combined itinerary visiting historic churches in Old Goa and then winding down
-                        at Miramar or Dona Paula. Our team can suggest routes tailored to your interests — beaches,
-                        nightlife, or quieter nature spots.</p>
-
-                    <p>Pricing & Policies — We offer competitive daily rates with flexible duration options and clear
-                        security deposit terms. Prices vary by car model and season; automatic cars are priced slightly
-                        higher. Insurance coverage, local taxes, and any additional options such as child seats are
-                        communicated during booking so there are no surprises.</p>
-
-                    <p>How To Book — Visit our <a href="cars.html">Cars</a> page to view the current fleet and detailed
-                        specifications, or go directly to the <a href="booking">Booking</a> section to start a
-                        reservation. For the quickest response, message us on WhatsApp with your trip dates and
-                        preferred car. We confirm availability, arrange delivery, and provide digital documentation for
-                        a smooth handover.</p>
-
-                    <p>Final Thought — Self drive car rental in Goa is the most flexible way to explore this vibrant
-                        state. Royal Goa Ride combines value, reliability, and local knowledge to make your trip
-                        memorable. Contact us via WhatsApp for instant help, and let us make your Goa road trip
-                        stress-free.</p>
-                </section>
+            <!-- Price + sub line -->
+            <div class="hero-price-bar">
+                <span class="hero-price-from">From</span>
+                <span class="hero-price-num">₹1,200</span>
+                <span class="hero-price-per">/day</span>
+                <span class="hero-price-dot" aria-hidden="true">·</span>
+                <span class="hero-price-note">Airport Delivery · Zero Hidden Charges</span>
             </div>
-        </section>
-    </main>
 
-    <!-- CUSTOMER REVIEWS SECTION -->
-    <section id="reviews" class="bg-slate-50 py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-serif font-black mb-4 text-slate-900">Customer Reviews</h2>
-                <p class="text-lg text-slate-600 max-w-2xl mx-auto">Join 500+ happy customers who've experienced premium
-                    car rental service in Goa</p>
-                <div class="flex items-center justify-center mt-4 gap-2">
-                    <div class="flex gap-1">
-                        <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                            <path
-                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-                            </path>
-                        </svg>
-                        <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                            <path
-                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-                            </path>
-                        </svg>
-                        <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                            <path
-                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-                            </path>
-                        </svg>
-                        <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                            <path
-                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-                            </path>
-                        </svg>
+            <!-- CTA row -->
+            <div class="hero-ctas">
+                <a href="#fleet" class="btn-primary-hero" aria-label="Explore our car fleet">
+                    <i class="bi bi-car-front-fill" aria-hidden="true"></i>
+                    <span>Explore Fleet</span>
+                </a>
+                <a href="https://wa.me/919975356697?text=Hi%2C%20I%20want%20to%20book%20a%20car"
+                   target="_blank" rel="noopener noreferrer"
+                   class="btn-ghost-hero" aria-label="Book on WhatsApp">
+                    <i class="bi bi-whatsapp" aria-hidden="true"></i>
+                    <span>Book on WhatsApp</span>
+                </a>
+            </div>
+
+        </div>
+
+        <!-- ── BOTTOM STATS STRIP ── -->
+        <div class="hero-stats-strip" aria-label="Key stats">
+            <div class="hss-item">
+                <span class="hss-num" data-target="500" data-suffix="+">
+                    <span class="stat-count">500</span><span class="stat-suffix">+</span>
+                </span>
+                <span class="hss-label">Happy Drivers</span>
+            </div>
+            <span class="hss-divider" aria-hidden="true"></span>
+            <div class="hss-item">
+                <span class="hss-num" data-target="15" data-suffix="+">
+                    <span class="stat-count">15</span><span class="stat-suffix">+</span>
+                </span>
+                <span class="hss-label">Car Models</span>
+            </div>
+            <span class="hss-divider" aria-hidden="true"></span>
+            <div class="hss-item">
+                <span class="hss-num" data-target="48" data-decimal="4.8" data-suffix="★">
+                    <span class="stat-count">4.8</span><span class="stat-suffix">★</span>
+                </span>
+                <span class="hss-label">Rating</span>
+            </div>
+            <span class="hss-divider" aria-hidden="true"></span>
+            <div class="hss-item hss-item--cta">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                <span class="hss-label">24 / 7 Support</span>
+            </div>
+        </div>
+
+        <!-- Scroll cue -->
+        <div class="scroll-hint" aria-hidden="true">
+            <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+            <span>Scroll to explore</span>
+        </div>
+
+    </section>
+
+    <!-- ═══ SECTION 2: CAR GALLERY SWIPE ═══ -->
+    <section id="fleet" class="fleet-section">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-tag">Our Fleet</div>
+                <h2 class="section-title">Choose Your <span class="neon-text">Ride</span></h2>
+                <p class="section-sub">Swipe to explore our full collection of self-drive vehicles</p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="fleet-filters">
+                <button class="filter-btn active" data-filter="all" onclick="filterFleet('all', this)">All</button>
+                <button class="filter-btn" data-filter="car"
+                    onclick="filterFleet('car', this); initFleet('car')">Cars</button>
+                <button class="filter-btn" data-filter="bike"
+                    onclick="filterFleet('bike', this); initFleet('bike')">Bikes</button>
+                <button class="filter-btn" data-filter="luxury" onclick="filterFleet('luxury', this)">Luxury</button>
+                <button class="filter-btn" data-filter="automatic"
+                    onclick="filterFleet('automatic', this)">Automatic</button>
+            </div>
+
+            <!-- Swipe Gallery -->
+            <div class="fleet-grid" id="fleet-carousel"></div>
+        </div>
+    </section>
+
+    <!-- ═══ SECTION 4: TRIP PLANNER ═══ -->
+    <section id="trips" class="trips-section">
+        <div class="trips-bg-orb"></div>
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-tag">Trip Planner</div>
+                <h2 class="section-title">Goa's <span class="neon-text">Best Routes</span></h2>
+                <p class="section-sub">Curated itineraries designed for your RoyalGoaRide adventure</p>
+            </div>
+
+            <div class="trips-grid" id="trips-grid">
+                <!-- Cards injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ SECTION 5: BOOKING TIMELINE ═══ -->
+    <section id="booking" class="timeline-section">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-tag">How It Works</div>
+                <h2 class="section-title">Book in <span class="neon-text">4 Simple Steps</span></h2>
+                <p class="section-sub">From choosing your car to hitting the road — it's that easy</p>
+            </div>
+
+            <div class="timeline-track">
+                <div class="timeline-line">
+                    <div class="timeline-progress" id="timeline-progress"></div>
+                </div>
+
+                <div class="timeline-steps">
+                    <div class="timeline-step" data-step="1">
+                        <div class="step-node">
+                            <div class="step-ring"></div>
+                            <div class="step-icon"><i class="bi bi-phone"></i></div>
+                        </div>
+                        <div class="step-content">
+                            <h3>Contact Us</h3>
+                            <p>WhatsApp or call us. Tell us your dates, pickup location, and preferred car.</p>
+                            <div class="step-badge">2 mins</div>
+                        </div>
                     </div>
 
                     <div class="timeline-step" data-step="2">
@@ -587,29 +607,25 @@
                         data-cfemail="55273a2c3439323a34273c3130153238343c397b363a38">[email&#160;protected]</span></a>
             </div>
         </div>
+        <div class="footer-bottom">
+            <span>© 2024 RoyalGoaRide. All rights reserved.</span>
+            <span>Professionalism on wheels ❤️</span>
+        </div>
     </footer>
 
-    <!-- Floating Action Buttons -->
-    <div id="floating-action-buttons" class="floating-action-container">
-        <!-- WhatsApp Button -->
-        <button id="whatsapp-btn" class="floating-btn whatsapp-btn" onclick="handleWhatsAppClick()"
-            title="Chat on WhatsApp" aria-label="WhatsApp Chat">
-            <i class="btn-icon bi bi-whatsapp"></i>
-            <span class="btn-label">WhatsApp</span>
-        </button>
+    <!-- ═══ FLOATING WHATSAPP BUTTON ═══ -->
+    <a href="https://wa.me/919975356697?text=Hi%2C%20I%20want%20to%20book%20a%20car"
+       target="_blank" rel="noopener noreferrer"
+       class="float-wa" aria-label="Book a car on WhatsApp">
+        <span class="float-wa__ring float-wa__ring--1" aria-hidden="true"></span>
+        <span class="float-wa__ring float-wa__ring--2" aria-hidden="true"></span>
+        <span class="float-wa__btn" aria-hidden="true">
+            <i class="bi bi-whatsapp"></i>
+        </span>
+        <span class="float-wa__label">Book Now</span>
+    </a>
 
-        <!-- Call Button -->
-        <button id="call-btn" class="floating-btn call-btn" onclick="handleCallClick()" title="Call Now"
-            aria-label="Call Now">
-            <i class="btn-icon bi bi-telephone-fill"></i>
-            <span class="btn-label">Call</span>
-        </button>
-    </div>
-
-    <!-- Fix: load non-minified script at bottom so DOM is ready; allows easier debugging -->
     <script src="main.js"></script>
 </body>
 
 </html>
-
-
