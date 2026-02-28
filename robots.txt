@@ -1,4 +1,22 @@
+# Robots.txt for RoyalGoaRide.com
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /*?*utm_source=
 
+# Crawl-delay for specific bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Sitemap location
 Sitemap: https://royalgoaride.com/sitemap.xml
+
+# Host preference (non-www)
+Host: https://royalgoaride.com

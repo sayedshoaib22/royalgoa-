@@ -1,0 +1,45 @@
+Netlify & Domain Checklist - RoyalGoaRide.com
+
+1) Netlify Primary Domain
+- Confirm Netlify's Site settings -> "Domain management" -> Primary domain is set to: royalgoaride.com (non-www)
+- If primary is non-www, Netlify will automatically redirect www → primary (ON). Do NOT add a conflicting rule in `_redirects`.
+
+2) HTTPS / SSL
+- If using Cloudflare in front of Netlify: set SSL/TLS mode to "Full" or "Full (strict)". NEVER use "Flexible".
+- If not using Cloudflare, Netlify provides HTTPS automatically. Do not add HTTP→HTTPS redirect rules in `_redirects` while debugging.
+
+3) DNS records
+- Ensure a single authoritative set of records:
+  - Use Netlify's recommended A/ALIAS or CNAME setup per their docs
+  - Remove duplicate A or CNAME records that point to both Netlify and Cloudflare or another host
+  - If using Cloudflare, keep Cloudflare proxy (orange cloud) on only after verifying SSL settings
+
+4) Netlify www redirect
+- In Netlify, confirm "Redirect www to primary domain" is enabled (this is automatic if primary domain differs).
+- If enabled, REMOVE any `_redirects` rules that also redirect www → non-www to avoid loops.
+
+5) Debug steps (quick)
+- 1) Temporarily replace `_redirects` with minimal file (we did that)
+- 2) Clear browser cookies for the domain and open a fresh incognito window
+- 3) Test both http://royalgoaride.com and http://www.royalgoaride.com and https variants
+- 4) Check HTTP response headers with `curl -I -L https://royalgoaride.com` and `curl -I -L http://royalgoaride.com`
+  Example:
+  ```bash
+  curl -I -L https://royalgoaride.com
+  curl -I -L http://royalgoaride.com
+  ```
+- 5) Inspect Netlify deploy logs (Site -> Deploys -> Latest) for redirect/warnings
+
+6) SEO-safe checks
+- Ensure canonical tag points to your chosen canonical (https://royalgoaride.com/)
+- Ensure sitemap uses the same canonical URLs (sitemap.xml currently uses https + non-www)
+- Avoid internal meta-refresh or JS redirects for canonicalization (use 301 server redirects instead)
+- After changes, re-run live tests (Chrome Incognito, curl, and https://httpstatus.io)
+
+7) Rollback plan
+- If anything breaks, re-upload `_redirects.bak` to `_redirects` and deploy to restore previous behavior while you debug.
+
+---
+Notes for Junior Dev:
+- Don't add `!` (force) redirects (like `301!`) while debugging — they override Netlify and can create loops.
+- Test with cleared cookies and incognito to avoid cached redirects.
