@@ -1,113 +1,15 @@
-<<<<<<< HEAD
-# Netlify Configuration for RoyalGoaRide.com
 [build]
   publish = "."
-  command = "echo 'No build command needed for static site'"
+  command = ""
 
-# Headers for SEO and Performance
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "geolocation=(self), microphone=(), camera=()"
-    
-# Cache static assets
+
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# Redirect rules (backup to _redirects file)
-[[redirects]]
-  from = "/index.html"
-  to = "/"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/home"
-  to = "/"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/home.html"
-  to = "/"
-  status = 301
-  force = true
-
-# 404 page
-[[redirects]]
-  from = "/*"
-  to = "/404.html"
-  status = 404
-=======
-# Netlify Configuration for RoyalGoaRide.com
-[build]
-  publish = "."
-  command = "echo 'No build command needed for static site'"
-
-# Headers for SEO and Performance
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "geolocation=(self), microphone=(), camera=()"
-    
-# Cache static assets
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# Redirect rules (backup to _redirects file)
-[[redirects]]
-  from = "/index.html"
-  to = "/"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/home"
-  to = "/"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/home.html"
-  to = "/"
-  status = 301
-  force = true
-
-# 404 page
-[[redirects]]
-  from = "/*"
-  to = "/404.html"
-  status = 404
->>>>>>> bcbb928071f10f47300f21d5b946b10403cfc0a6
