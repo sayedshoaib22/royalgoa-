@@ -168,1232 +168,520 @@ const vehicles = [
   }
 ];
 
-// Debug: Log vehicles loaded
-console.log('Vehicles Loaded:', vehicles);
+// ══════════════════════════════════════════════
+// TRIP PLANNER DATA
+// ══════════════════════════════════════════════
 
-// ============================================
-// SECTION 2: GLOBAL STATE
-// ============================================
-
-let currentPage = 'home';
-let isDarkMode = false;
-let selectedVehicle = null;
-let isScrolled = false;
-let searchQuery = '';
-let bookingStep = 1;
-let bookingFormData = {
-  name: '',
-  phone: '',
-  pickup: 'Madgao Railway Station (Main Exit)',
-  date: '',
-  duration: '1',
-  transmission: ''
-};
-
-// ============================================
-// SECTION 3: UTILITY FUNCTIONS
-// ============================================
-
-function getVehicleImage(vehicle) {
-  if (!vehicle) return PLACEHOLDER_IMAGE;
-  const url = (vehicle.image && vehicle.image.trim()) ? vehicle.image : PLACEHOLDER_IMAGE;
-  return url;
-}
-
-// Return a WebP variant if the source is an images.unsplash or same-origin PNG/JPG pattern (best-effort)
-function preferWebP(url) {
-  try {
-    if (!url) return url;
-    // Unsplash supports automatic format via &auto=format so keep as-is
-    if (url.includes('unsplash.com') || url.includes('image2url.com')) return url;
-    // If it's a .png or .jpg on same domain, attempt .webp
-    if (/\.(png|jpg|jpeg)$/i.test(url)) {
-      return url.replace(/\.(png|jpg|jpeg)$/i, '.webp');
-    }
-    return url;
-  } catch (e) {
-    return url;
+const trips = [
+  {
+    title: 'North Goa Beach Blitz',
+    duration: '1 Day',
+    image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=800',
+    route: 'Margao → Calangute → Baga → Anjuna → Vagator',
+    desc: 'Hit the legendary north coast beaches in one epic day. From bustling Baga to chilled Vagator, this route covers all the famous spots.',
+    tags: ['Beaches', 'Nightlife', 'Shacks', 'Water Sports'],
+    carRec: 'Best in: Ignis / Swift (Compact & Easy Parking)'
+  },
+  {
+    title: 'Old Goa Heritage Loop',
+    duration: '1 Day',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=800',
+    route: 'Margao → Panaji → Old Goa → Dona Paula',
+    desc: "Explore Goa's Portuguese soul — majestic basilicas, colonial mansions, the capital's Latin Quarter, and sea-facing viewpoints.",
+    tags: ['Heritage', 'Culture', 'Architecture', 'Views'],
+    carRec: 'Best in: Baleno / i20 (Comfortable for Sightseeing)'
+  },
+  {
+    title: 'South Goa Serenity Drive',
+    duration: '1 Day',
+    image: 'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?auto=format&fit=crop&q=80&w=800',
+    route: 'Margao → Colva → Benaulim → Palolem → Agonda',
+    desc: 'Quieter, more serene south beaches with pristine sands and laid-back vibes. Palolem beach is one of India\'s most beautiful.',
+    tags: ['Serene', 'Nature', 'Beaches', 'Relaxation'],
+    carRec: 'Best in: Maruti Brezza / Creta (Comfort + Ground Clearance)'
+  },
+  {
+    title: 'Jungle & Waterfall Adventure',
+    duration: '2 Days',
+    image: 'https://images.unsplash.com/photo-1515488764276-beab7607c1e6?auto=format&fit=crop&q=80&w=800',
+    route: 'Margao → Dudhsagar Falls → Bhagwan Mahaveer Sanctuary',
+    desc: "Chase Goa's spectacular Dudhsagar waterfall through wildlife reserve roads. Rugged terrain, incredible views, unforgettable experience.",
+    tags: ['Adventure', 'Wildlife', 'Waterfall', 'Offroad'],
+    carRec: 'Best in: Thar Hardtop / Fortuner (4x4 for Tough Roads)'
+  },
+  {
+    title: 'Spice Farm & Village Life',
+    duration: '1 Day',
+    image: 'https://images.unsplash.com/photo-1564417975723-8e60ddb4e0c7?auto=format&fit=crop&q=80&w=800',
+    route: 'Margao → Ponda Spice Farms → Shri Mangeshi Temple',
+    desc: 'Immerse in authentic Goa — fragrant spice plantations, traditional Goan cooking, and ancient temples away from the tourist rush.',
+    tags: ['Culture', 'Food', 'Authentic', 'Temples'],
+    carRec: 'Best in: Ertiga / Innova Crysta (Great for Families)'
+  },
+  {
+    title: 'Goa Sunset Coastal Tour',
+    duration: '4 Hours',
+    image: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&q=80&w=800',
+    route: 'Margao → Fort Aguada → Sinquerim → Candolim',
+    desc: 'The golden hour drive along Goa\'s coastline, ending at the iconic Fort Aguada for a breathtaking sunset over the Arabian Sea.',
+    tags: ['Sunset', 'Fort', 'Coastal', 'Photography'],
+    carRec: 'Best in: Mini Cooper / Audi (Feel the Breeze in Style)'
   }
-}
+];
 
-function $(id) {
-  return document.getElementById(id);
-}
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
 
-function getDemoVehicles() {
-  return [
-    {
-      id: 'demo-swift',
-      name: 'Maruti Swift',
-      type: 'car',
-      category: 'Premium Hatchback',
-      pricePerDay: 1800,
-      image: 'https://image2url.com/r2/default/images/1771086979849-965ca50c-72cc-4015-a047-c020fa50af0d.jpeg',
-      transmission: 'Automatic',
-      fuel: 'Petrol',
-      seats: 5,
-      features: ['Manual  Available', 'Sporty Drive', 'Keyless Entry', 'Bluetooth']
-    },
-    {
-      id: 'demo-baleno',
-      name: 'Maruti Baleno',
-      type: 'car',
-      category: 'Luxury Hatchback',
-      pricePerDay: 2000,
-      image: 'https://images.unsplash.com/photo-1624564858031-6e3e536104e1?auto=format&fit=crop&q=80&w=800',
-      transmission: 'Automatic',
-      fuel: 'Petrol',
-      seats: 5,
-      features: ['Manual  Available', 'Spacious Cabin', '360 Camera', 'Cruise Control']
-    },
-    {
-      id: 'demo-hero',
-      name: 'Hero Xtreme 160R',
-      type: 'bike',
-      category: 'Sports Bike',
-      pricePerDay: 600,
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=800',
-      transmission: 'Manual',
-      fuel: 'Petrol',
-      seats: 2,
-      features: ['Powerful Performance', 'Excellent Mileage', 'LED Lights', 'Digital Display']
-    }
-  ];
-}
+let currentFleetFilter = 'all';
+let fleetOffset = 0;
+let filteredVehicles = [];
 
-// ============================================
-// SECTION 4: APP INITIALIZATION
-// ============================================
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
-  try {
-    if (typeof vehicles === 'undefined' || !vehicles) {
-      console.warn('No vehicles data loaded. Check main.js link.');
-      window.vehicles = getDemoVehicles();
-      console.log('Using fallback demo vehicles.');
-    } else if (vehicles.length === 0) {
-      console.warn('Vehicles array is empty.');
-      window.vehicles = getDemoVehicles();
-      console.log('Using fallback demo vehicles.');
-    }
-
-    console.log('Vehicles Loaded:', vehicles);
-
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      isDarkMode = true;
-      document.body.classList.add('dark');
-    }
-    updateThemeIcons();
-
-    const loadingScreen = $('loading-screen');
-    // Fix loading: render immediately (no artificial delay) and always hide loading screen even on render errors.
-    if (loadingScreen) {
-      try {
-        renderPage();
-        console.log('Page rendered successfully');
-      } catch (renderErr) {
-        console.error('Page render error:', renderErr);
-        const mainContent = $('main-content');
-        if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-red-600">Error loading content. Please refresh the page.</div>';
-      }
-      // Always hide loading screen so user is not stuck on blank overlay
-      loadingScreen.style.display = 'none';
-      // Ensure main-content is not left empty by render functions
-      const mainContent = $('main-content');
-      if (mainContent && (!mainContent.innerHTML || mainContent.innerHTML.trim().length === 0)) {
-        mainContent.innerHTML = renderHomePage(window.vehicles || getDemoVehicles());
-      }
-      // Show WhatsApp button after page renders
-      const whatsappBtn = $('whatsapp-btn');
-      if (whatsappBtn) {
-        whatsappBtn.classList.remove('opacity-0', 'invisible');
-        whatsappBtn.classList.add('opacity-100', 'visible');
-      }
-    } else {
-      // No loading overlay — still attempt to render and ensure main content is populated
-      try {
-        renderPage();
-      } catch (renderErr) {
-        console.error('Page render error (no loading-screen):', renderErr);
-        const mainContent = $('main-content');
-        if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-red-600">Error loading content. Please refresh the page.</div>';
-      }
-      const mainContent = $('main-content');
-      if (mainContent && (!mainContent.innerHTML || mainContent.innerHTML.trim().length === 0)) {
-        mainContent.innerHTML = renderHomePage(window.vehicles || getDemoVehicles());
-      }
-      const whatsappBtn = $('whatsapp-btn');
-      if (whatsappBtn) {
-        whatsappBtn.classList.remove('opacity-0', 'invisible');
-        whatsappBtn.classList.add('opacity-100', 'visible');
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll);
-  } catch (err) {
-    console.error('Init error:', err);
-    const mainContent = $('main-content');
-    if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-slate-600">Something went wrong. Please refresh the page.</div>';
-  }
+  initLoadingScreen();
+  initNavbar();
+  initParticles();
+  initCounters();
+  initFleet('car');
+  initTrips();
+  initTimeline();
+  initFAQ();
+  initScrollAnimations();
 });
 
-// Global error handlers: display a friendly message inside main-content when uncaught errors occur.
-window.addEventListener('error', (evt) => {
-  console.error('Uncaught error:', evt.error || evt.message || evt);
-  const mainContent = $('main-content');
-  if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-red-600">An unexpected error occurred. Check the console for details.</div>';
-});
-window.addEventListener('unhandledrejection', (evt) => {
-  console.error('Unhandled promise rejection:', evt.reason);
-  const mainContent = $('main-content');
-  if (mainContent) mainContent.innerHTML = '<div class="p-20 text-center text-red-600">An unexpected error occurred. Check the console for details.</div>';
-});
-
-// ============================================
-// SECTION 5: NAVIGATION & STYLING
-// ============================================
-
-function navigateTo(page) {
-  currentPage = page;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  renderPage();
-  updateNavLinks();
+// ── LOADING SCREEN ──
+function initLoadingScreen() {
+  const screen = document.getElementById('loading-screen');
+  if (!screen) return;
+  setTimeout(() => {
+    screen.classList.add('hidden');
+  }, 1600);
 }
 
-function updateNavLinks() {
-  const links = document.querySelectorAll('.nav-link');
-  links.forEach(link => {
-    const page = link.getAttribute('data-page');
-    if (page === currentPage) {
-      link.classList.add('text-primary');
-      link.classList.remove('text-slate-600', 'text-slate-800');
+// ── NAVBAR ──
+function initNavbar() {
+  const navbar = document.getElementById('navbar');
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      navbar.classList.add('scrolled');
     } else {
-      link.classList.remove('text-primary');
-      link.classList.add(isScrolled || isDarkMode ? 'text-slate-600' : 'text-slate-800');
-      link.classList.remove(isScrolled || isDarkMode ? 'text-slate-800' : 'text-slate-600');
+      navbar.classList.remove('scrolled');
     }
   });
-}
 
-function toggleDarkMode() {
-  isDarkMode = !isDarkMode;
-  document.body.classList.toggle('dark');
-  updateThemeIcons();
-}
-
-function updateThemeIcons() {
-  const desktopIcon = $('theme-toggle');
-  const mobileIcon = $('theme-toggle-mobile');
-  const sunSVG = `<svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>`;
-  const moonSVG = `<svg class="w-5 h-5 text-slate-700 dark-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>`;
-  if (desktopIcon) desktopIcon.innerHTML = isDarkMode ? sunSVG : moonSVG;
-  if (mobileIcon) mobileIcon.innerHTML = isDarkMode ? sunSVG : moonSVG;
-}
-
-function toggleMobileMenu() {
-  const menu = $('mobile-menu');
-  const btn = $('mobile-menu-btn');
-  if (!menu || !btn) return;
-  if (menu.classList.contains('hidden')) {
-    menu.classList.remove('hidden');
-    menu.classList.add('animate-fade-in-down');
-    btn.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
-  } else {
-    menu.classList.add('hidden');
-    btn.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
+  if (hamburger) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
   }
-}
 
-function handleScroll() {
-  const scrolled = window.scrollY > 50;
-  if (scrolled !== isScrolled) {
-    isScrolled = scrolled;
-    const navbar = $('navbar');
-    if (navbar) {
-      if (isScrolled) {
-        navbar.classList.add('navbar-scrolled');
-        navbar.classList.remove('bg-transparent', 'py-5');
-      } else {
-        navbar.classList.remove('navbar-scrolled');
-        navbar.classList.add('bg-transparent', 'py-5');
-      }
-    }
-    updateNavLinks();
-  }
-}
-
-// ============================================
-// SECTION 6: VEHICLE SELECTION & RENDERING
-// ============================================
-
-function selectVehicle(vehicleId, transmission) {
-  if (transmission) {
-    bookingFormData.transmission = transmission;
-  }
-  bookingStep = 1;
-
-  // Use merged vehicle (grouped by id) so selectedVehicle contains transmissions array
-  const list = typeof vehicles !== 'undefined' ? vehicles : [];
-  const merged = mergeVehiclesByName(list);
-  selectedVehicle = merged.find(v => v.id === vehicleId) || null;
-
-  navigateTo('booking');
-}
-
-// Merge vehicles with same ID/name to group manual and automatic
-function mergeVehiclesByName(vehiclesList) {
-  const merged = {};
-
-  vehiclesList.forEach(raw => {
-    const vehicle = { ...raw };
-    // normalize id and type and name
-    vehicle.id = (vehicle.id || '').toString().trim();
-    vehicle.type = (vehicle.type || '').toString().trim().toLowerCase();
-    if (vehicle.name && typeof vehicle.name === 'string') vehicle.name = vehicle.name.trim();
-
-    const key = `${vehicle.type}_${vehicle.id}`;
-    if (!merged[key]) {
-      merged[key] = {
-        ...vehicle,
-        // ensure consistent casing for type
-        type: vehicle.type,
-        transmissions: []
-      };
-    }
-
-    // Do not create transmission entries for bikes/scooters
-    if (vehicle.type !== 'car') return;
-
-    // Clean and normalize transmission string
-    let transType = (vehicle.transmission || '').toString().replace(/\s+/g, ' ').trim();
-    // Normalize common variants
-    transType = transType.replace(/Automatic Only/i, 'Automatic');
-    transType = transType.replace(/Manual Only/i, 'Manual');
-    // Some entries may use commas or slashes
-    const parts = transType.split(/\s*\/[\s]*|,|\s+and\s+/i).map(p => p.trim()).filter(Boolean);
-
-    if (parts.length === 0) return;
-
-    parts.forEach(partRaw => {
-      let part = partRaw.replace(/\s+/g, ' ').trim();
-      // Capitalize first letter
-      part = part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
-      if (!part) return;
-
-      // If transmission already exists, keep the lowest price
-      const existing = merged[key].transmissions.find(t => t.type === part);
-      const price = Number(vehicle.pricePerDay) || 0;
-      if (existing) {
-        if (price && price < existing.price) existing.price = price;
-      } else {
-        merged[key].transmissions.push({ type: part, price });
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
       }
     });
   });
-
-  return Object.values(merged);
 }
 
-function renderPage() {
-  const mainContent = $('main-content');
-  if (!mainContent) return;
-  // Debug log to help trace which page is being rendered
-  console.log('Page rendering:', currentPage);
+window.closeMobileMenu = function () {
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (hamburger) hamburger.classList.remove('open');
+  if (mobileMenu) mobileMenu.classList.remove('open');
+};
 
-  const list = typeof vehicles !== 'undefined' ? vehicles : [];
-
-  try {
-    switch (currentPage) {
-      case 'home':
-        mainContent.innerHTML = renderHomePage(list);
-        setPageMeta({
-          title: 'RoyalGoaRide – Best Self Drive Car Rental in Goa | Cheap & Automatic Cars',
-          description: 'Affordable self drive car rental in Goa with manual & automatic cars. Airport delivery, 24/7 support. Book with RoyalGoaRide today.',
-          canonical: 'https://royalgoaride.com/'
-        });
-        break;
-      case 'cars':
-        mainContent.innerHTML = renderVehiclesPage('car', list);
-        setPageMeta({
-          title: 'RoyalGoaRide – Car Rentals in Goa | Automatic & Cheap Cars',
-          description: 'Browse our fleet of cars in Goa. Cheap car rental Goa with automatic and manual options. Airport delivery & 24/7 support.',
-          canonical: 'https://royalgoaride.com/cars'
-        });
-        break;
-      case 'bikes':
-        mainContent.innerHTML = renderVehiclesPage('bike', list);
-        setPageMeta({
-          title: 'RoyalGoaRide – Bike Rentals in Goa | Scooters & Royal Enfield',
-          description: 'Affordable bike rentals in Goa. Explore scooters and Royal Enfield bikes for scenic Goa trips. Easy booking and pickup.',
-          canonical: 'https://royalgoaride.com/bikes'
-        });
-        break;
-      case 'booking':
-        mainContent.innerHTML = renderBookingPage(list);
-        setPageMeta({
-          title: 'RoyalGoaRide – Booking | Self Drive Car Rental Goa',
-          description: 'Book your self drive car in Goa with RoyalGoaRide. Fast WhatsApp booking and station pickup available.',
-          canonical: 'https://royalgoaride.com/booking'
-        });
-        break;
-      case 'contact':
-        mainContent.innerHTML = renderContactPage();
-        setPageMeta({
-          title: 'RoyalGoaRide – Contact | Car Rental in Goa',
-          description: 'Contact RoyalGoaRide for self drive car rentals in Goa. WhatsApp and phone booking available.',
-          canonical: 'https://royalgoaride.com/contact'
-        });
-        break;
-      default:
-        mainContent.innerHTML = renderHomePage(list);
-    }
-  } catch (err) {
-    console.error('renderPage error:', err);
-    // Ensure user sees an error instead of blank page
-    mainContent.innerHTML = '<div class="p-20 text-center text-red-600">Error rendering page. Open console for details.</div>';
+// ── PARTICLES ──
+function initParticles() {
+  const container = document.getElementById('hero-particles');
+  if (!container) return;
+  const count = window.innerWidth < 768 ? 20 : 40;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'hero-particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.width = (Math.random() * 2 + 1) + 'px';
+    p.style.height = p.style.width;
+    const dur = (Math.random() * 8 + 6) + 's';
+    const delay = (Math.random() * 8) + 's';
+    p.style.animationDuration = dur;
+    p.style.animationDelay = delay;
+    p.style.opacity = Math.random() * 0.6 + 0.2;
+    container.appendChild(p);
   }
 }
 
-// Utility to set document meta tags for SPA routes
-function setPageMeta({ title, description, canonical }) {
-  try {
-    if (title) document.title = title;
-    let desc = document.querySelector('meta[name="description"]');
-    if (!desc) {
-      desc = document.createElement('meta');
-      desc.name = 'description';
-      document.head.appendChild(desc);
-    }
-    if (description) desc.content = description;
-
-    if (canonical) {
-      let link = document.querySelector('link[rel="canonical"]');
-      if (!link) {
-        link = document.createElement('link');
-        link.rel = 'canonical';
-        document.head.appendChild(link);
+// ── COUNTER ANIMATION ──
+function initCounters() {
+  const counters = document.querySelectorAll('.stat-num');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        observer.unobserve(entry.target);
       }
-      link.href = canonical;
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => observer.observe(c));
+}
+
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target) || 0;
+  const duration = 1800;
+  const start = performance.now();
+  function step(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(ease * target);
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(step);
+}
+
+// ── FLEET ──
+function initFleet(type = "car") {
+  if (type === "bike") {
+    filteredVehicles = vehicles.filter(v => v.type === "bike");
+  } else {
+    filteredVehicles = vehicles.filter(v => v.type === "car");
+  }
+  renderFleetCards();
+}
+
+window.filterFleet = function (filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFleetFilter = filter;
+  fleetOffset = 0;
+
+  if (filter === 'all') {
+    filteredVehicles = [...vehicles];
+  } else if (filter === 'luxury') {
+    filteredVehicles = vehicles.filter(v => v.pricePerDay >= 5000);
+  } else if (filter === 'automatic') {
+    filteredVehicles = vehicles.filter(v => v.transmission.toLowerCase().includes('auto'));
+  } else {
+    filteredVehicles = vehicles.filter(v => v.type === filter);
+  }
+  renderFleetCards();
+};
+
+function renderFleetCards() {
+  const container = document.getElementById('fleet-carousel');
+  if (!container) return;
+
+  // Group vehicles by name so Auto+Manual appear on ONE card
+  const grouped = {};
+  filteredVehicles.forEach(v => {
+    const key = v.id + '_' + v.name.trim();
+    if (!grouped[key]) {
+      grouped[key] = { ...v, variants: [] };
     }
-  } catch (err) {
-    console.error('setPageMeta error', err);
-  }
-}
-
-function renderHomePage(list) {
-  const merged = mergeVehiclesByName(list || []);
-  const featured = merged.slice(0, 6);
-  const cards = featured.length
-    ? featured.map(v => renderMergedVehicleCard(v)).join('')
-    : '<div class="col-span-full text-center py-16 text-slate-500">No vehicles found.</div>';
-
-  return `
-    <div class="animate-fade-in">
-      <section class="hero-section">
-        <div class="hero-bg">
-          <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=1920" alt="Goa beach scenery – RoyalGoaRide" loading="lazy">
-        </div>
-        <div class="hero-content">
-          <div style="max-width: 42rem;">
-            <span class="hero-badge">Premium Goa Rentals</span>
-            <h1 style="font-size: 3.75rem; font-weight: 900; font-family: 'Playfair Display', serif; margin-bottom: 1.5rem; line-height: 1.25;">
-                Drive the <span class="text-primary">Prime</span> Experience.
-              </h1>
-              <h2 class="sr-only">Self drive car rental in Goa — RoyalGoaRide</h2>
-            </h1>
-            <p style="font-size: 1.25rem; margin-bottom: 2.5rem; color: #e2e8f0; line-height: 1.625; font-weight: 300;">
-              Professional car and bike rentals delivered to Madgao Station and across Goa. Luxury, comfort, and transparency guaranteed.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4">
-              <button onclick="navigateTo('cars')" class="btn-primary">View Cars <svg class="ml-3 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg></button>
-              <button onclick="navigateTo('bikes')" class="btn-secondary">View Bikes <svg class="ml-3 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></button>
-            </div>
-          </div>
-        </div>
-        <div class="hero-seo-content max-w-4xl mx-auto mt-8 text-white leading-relaxed">
-          <h2 class="text-2xl font-bold mb-3">Self drive car rental in Goa — Cheap, Automatic, and Convenient</h2>
-          <p>
-            RoyalGoaRide specialises in self drive car rental in Goa, offering both manual and automatic cars for travellers seeking flexibility and comfort. Whether you need a cheap car rental Goa for a budget trip or an automatic car rental Goa for easy coastal driving, our fleet has the right vehicle for you. We provide reliable car rental near Goa airport with timely airport delivery and station pickups, making your arrival hassle-free.
-          </p>
-          <p>
-            Our service focuses on safety, transparent pricing, and 24/7 support. Choose from compact hatchbacks, SUVs, and luxury sedans — all maintained to high standards. Book with RoyalGoaRide Goa for a seamless self-drive experience and explore beaches, heritage sites, and the scenic drives Goa is famous for.
-          </p>
-        </div>
-        <div class="ai-concierge-box hidden lg:block">
-          <div class="glass p-6 rounded-3xl shadow-2xl ai-box-border">
-            <div class="flex items-center space-x-3 mb-4">
-              <div class="ai-icon-circle"><svg class="text-white w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg></div>
-              <h4 class="font-black uppercase" style="letter-spacing: -0.05em;">Travel Assistant</h4>
-            </div>
-            <p class="text-sm mb-4 ai-subtext">Need help picking a ride? Ask me!</p>
-            <div class="space-y-3">
-              <input type="text" id="ai-prompt" placeholder="e.g. Best car for 4 people to visit Dudhsagar?" class="ai-input">
-              <button onclick="handleAiHelp()" id="ai-submit-btn" class="ai-submit-btn">Get Recommendation</button>
-              <div id="ai-result" class="ai-result hidden"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="py-24 bg-white section-featured">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          ${renderSectionHeading('Our Premier Fleet', 'Top Rated', true)}
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">${cards}</div>
-          <div class="text-center mt-12">
-            <button onclick="navigateTo('cars')" class="text-primary font-bold hover:underline flex items-center mx-auto">Explore Full Collection <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
-          </div>
-        </div>
-      </section>
-
-      <section class="py-24 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
-            ${renderFeatureCard('Madgao Station Delivery', 'Arrive by train? We meet you at the platform exit.', 'map-pin')}
-            ${renderFeatureCard('Instant Confirmation', 'Real-time availability and fast responses.', 'calendar')}
-            ${renderFeatureCard('Elite Support', 'Dedicated concierge for all your road needs.', 'phone')}
-            ${renderFeatureCard('Premium Condition', 'Pristine, well-maintained vehicles only.', 'star')}
-          </div>
-        </div>
-      </section>
-    </div>
-  `;
-}
-
-function renderVehiclesPage(type, list) {
-  const vehiclesList = list || [];
-  const merged = mergeVehiclesByName(vehiclesList);
-  const filtered = merged
-    .filter(v => v.type === type)
-    .filter(v =>
-      (v.name || '').toLowerCase().includes((searchQuery || '').toLowerCase()) ||
-      (v.category || '').toLowerCase().includes((searchQuery || '').toLowerCase())
-    );
-
-  const title = type === 'car' ? 'Our Premium Cars' : 'Our Iconic Bikes';
-  const subtitle = type === 'car' ? 'Elegance in Motion' : 'Freedom on Two Wheels';
-
-  const gridContent = filtered.length > 0
-    ? `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">${filtered.map(v => renderMergedVehicleCard(v)).join('')}</div>`
-    : `
-      <div class="empty-state">
-        <svg class="h-12 w-12 mx-auto mb-4 empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-        <h3 class="text-xl font-bold mb-2 empty-state-title">No vehicles found.</h3>
-        <p class="empty-state-text">Try searching for something else or browse our full collection.</p>
-        <button onclick="clearSearch()" class="mt-6 text-primary font-bold hover:underline">Clear Search</button>
-      </div>
-    `;
-
-  return `
-    <div class="pt-32 pb-24 px-4 max-w-7xl mx-auto animate-fade-in">
-      ${renderSectionHeading(title, subtitle, false)}
-      <div class="search-container">
-        <svg class="search-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-        <input type="text" id="vehicle-search" placeholder="Search ${type === 'car' ? 'cars' : 'bikes'} by name or category..." class="search-input" value="${(searchQuery || '').replace(/"/g, '&quot;')}" oninput="handleSearchInput(event.target.value)">
-        ${searchQuery ? `<button onclick="clearSearch()" class="search-clear" aria-label="Clear search"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>` : ''}
-      </div>
-      ${gridContent}
-    </div>
-  `;
-}
-
-function renderBookingPage(list) {
-  if (bookingStep === 2) {
-    return `
-      <div class="pt-32 pb-24 px-4 flex justify-center items-center min-h-booking">
-        <div class="max-w-md w-full bg-white booking-success-card">
-          <div class="booking-success-icon"><svg class="text-green-600 w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-          <h2 class="text-3xl font-black mb-4">Request Sent!</h2>
-          <p class="mb-8 booking-success-text">Your booking details have been sent to our concierge via WhatsApp. We will confirm your ride within minutes!</p>
-          <button onclick="navigateTo('home')" class="w-full bg-primary py-4 rounded-xl text-white font-bold hover:bg-primary-dark transition-all">Back to Home</button>
-        </div>
-      </div>
-    `;
-  }
-
-  const imgSrc = selectedVehicle ? getVehicleImage(selectedVehicle) : '';
-
-  let selectedPrice = selectedVehicle && selectedVehicle.pricePerDay ? selectedVehicle.pricePerDay : 0;
-  let selectedTransmissionDisplay = bookingFormData.transmission || 'Select';
-
-  if (selectedVehicle && selectedVehicle.transmissions && bookingFormData.transmission) {
-    const selectedTrans = selectedVehicle.transmissions.find(t => t.type === bookingFormData.transmission);
-    if (selectedTrans) {
-      selectedPrice = selectedTrans.price;
-    }
-  }
-
-  const selectedBlock = selectedVehicle
-    ? `
-      <div class="p-6 mb-10 rounded-3xl flex items-center space-x-6 selected-vehicle-block">
-        <img src="${imgSrc}" alt="${(selectedVehicle.name || '').replace(/"/g, '&quot;')}" class="w-24 h-24 object-cover rounded-2xl" onerror="this.src='${PLACEHOLDER_IMAGE}'">
-        <div>
-          <span class="text-xs font-bold uppercase tracking-widest text-primary mb-1 block">Selected Vehicle</span>
-          <h4 class="text-xl font-bold">${(selectedVehicle.name || '').replace(/</g, '&lt;')}</h4>
-          <p class="text-sm text-slate-600">${selectedTransmissionDisplay}</p>
-          <p class="text-sm font-bold text-primary">₹${selectedPrice}/day</p>
-        </div>
-      </div>
-    `
-    : '<p class="text-lg mb-10 text-slate-500 leading-relaxed">Arriving at Madgao Station? We specialize in quick handovers right at the station exit.</p>';
-
-  const pickupOpts = [
-    'Madgao Railway Station (Main Exit)',
-    'Madgao Railway Station (PFC Exit)',
-    'Mopa International Airport',
-    'Dabolim Airport',
-    'Margao City Center',
-    'Colva Beach',
-    'seraulim Beach',
-    'Palolem Beach',
-    'Agonda Beach',
-    'varca Beach',
-    'Benaulim Beach',
-    'Cavelossim Beach',
-    'Mobor Beach',
-    'Betalbatim Beach',
-    'Cabo De Rama Fort',
-    'Canacona Bus Stop',
-    'Panjim City Center',
-    'Vasco Da Gama',
-    'Mapusa City Center',
-    'Anjuna Beach',
-    'Baga Beach',
-    'Calangute Beach',
-    'Candolim Beach',
-    'Sinquerim Beach',
-    'Fort Aguada',
-    'Miramar Beach',
-    'Caranzalem Beach',
-    'Dona Paula',
-    'Old Goa',
-    'Panaji Railway Station',
-    'Ponda City Center',
-    'Vagator Beach',
-    'Morjim Beach',
-    'Ashwem Beach',
-    'Arambol Beach',
-    'Chapora Fort',
-    'Anjuna Flea Market',
-    'Mapusa Market',
-    'Margao Market',
-    'Panjim Market',
-    'Vasco Market'
-  ];
-  const pickupSelect = pickupOpts.map(opt => `<option value="${opt.replace(/"/g, '&quot;')}" ${bookingFormData.pickup === opt ? 'selected' : ''}>${opt.replace(/</g, '&lt;')}</option>`).join('');
-
-  return `
-    <div class="pt-32 pb-24 px-4 max-w-7xl mx-auto animate-fade-in">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-        <div>
-          ${renderSectionHeading('Confirm Your Journey', 'Booking', false)}
-          ${selectedBlock}
-          <div class="space-y-6">
-            ${renderBookingFeature('Pickup at Madgao Station', 'map-pin')}
-            ${renderBookingFeature('Direct Concierge Contact', 'message')}
-            ${renderBookingFeature('Verified Premium Fleet', 'check')}
-          </div>
-        </div>
-        <div class="bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-slate-100 booking-form-card">
-          <form onsubmit="handleBookingSubmit(event)" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Full Name</label>
-                <input type="text" required placeholder="John Doe" id="booking-name" class="input-field" value="${(bookingFormData.name || '').replace(/"/g, '&quot;')}">
-              </div>
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Phone</label>
-                <input type="tel" required placeholder="99753 56697" id="booking-phone" class="input-field" value="${(bookingFormData.phone || '').replace(/"/g, '&quot;')}">
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Station / Pickup</label>
-              <select id="booking-pickup" class="input-field">${pickupSelect}</select>
-            </div>
-            <div class="grid grid-cols-2 gap-6">
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Date</label>
-                <input type="date" required id="booking-date" class="input-field" value="${(bookingFormData.date || '').replace(/"/g, '&quot;')}">
-              </div>
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Days</label>
-                <input type="number" min="1" required id="booking-duration" class="input-field" value="${(bookingFormData.duration || '1').replace(/"/g, '&quot;')}">
-              </div>
-            </div>
-            ${selectedVehicle && selectedVehicle.transmissions && selectedVehicle.transmissions.length > 1 ? `
-            <div>
-              <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Select Transmission</label>
-              <div class="grid grid-cols-2 gap-3">
-                ${selectedVehicle.transmissions.map(trans => `
-                  <label class="transmission-radio-label">
-                    <input type="radio" name="transmission" value="${trans.type}" ${bookingFormData.transmission === trans.type ? 'checked' : ''} required onchange="document.getElementById('booking-transmission').value = this.value">
-                    <span class="transmission-radio-text">${trans.type}<br/>₹${trans.price}</span>
-                  </label>
-                `).join('')}
-              </div>
-              <input type="hidden" id="booking-transmission" value="${bookingFormData.transmission || (selectedVehicle.transmissions[0] ? selectedVehicle.transmissions[0].type : '')}">
-            </div>
-            ` : selectedVehicle && selectedVehicle.transmissions && selectedVehicle.transmissions.length === 1 ? `
-            <div>
-              <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Transmission</label>
-              <div class="input-field bg-slate-100 text-slate-700 font-semibold flex items-center">${selectedVehicle.transmissions[0].type}</div>
-              <input type="hidden" id="booking-transmission" value="${selectedVehicle.transmissions[0].type}">
-            </div>
-            ` : bookingFormData.transmission ? `
-            <div>
-              <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-slate-500">Transmission</label>
-              <div class="input-field bg-slate-100 text-slate-700 font-semibold flex items-center">${bookingFormData.transmission}</div>
-              <input type="hidden" id="booking-transmission" value="${bookingFormData.transmission}">
-            </div>
-            ` : ''}
-            <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white py-5 rounded-2xl font-black text-xl shadow-lg transition-all flex items-center justify-center space-x-3">
-              <span>Request on WhatsApp</span>
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderContactPage() {
-  return `
-    <div class="pt-32 pb-24 px-4 max-w-7xl mx-auto animate-fade-in">
-      ${renderSectionHeading('Connect With Us', 'Contact', true)}
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-        ${renderContactCard('Concierge', '99753 56697', 'phone')}
-        ${renderContactCard('Corporate', 'bookings@royalgoaride.com', 'mail')}
-        ${renderContactCard('Location', 'Madgao Railway Station, Goa', 'map-pin')}
-      </div>
-      <div class="contact-map">
-        <iframe title="Madgao Location" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15392.378931765275!2d73.96805252871093!3d15.269477000000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbfb38914b43939%3A0xe54e60123512b9d0!2sMadgaon%20Junction!5e0!3m2!1sen!2sin!4v1709400000000!5m2!1sen!2sin" loading="lazy"></iframe>
-      </div>
-    </div>
-  `;
-}
-
-// ============================================
-// SECTION 7: COMPONENT RENDERERS
-// ============================================
-
-function renderSectionHeading(title, subtitle, centered) {
-  return `
-    <div class="mb-12 ${centered ? 'text-center' : ''}">
-      <span class="text-primary font-black uppercase tracking-widest text-sm mb-2 block">${(subtitle || '').replace(/</g, '&lt;')}</span>
-      <h2 class="text-3xl md:text-5xl font-black font-serif">${(title || '').replace(/</g, '&lt;')}</h2>
-      ${centered ? '<div class="section-divider"></div>' : ''}
-    </div>
-  `;
-}
-
-function renderMergedVehicleCard(vehicle) {
-  if (!vehicle) return '';
-  const img = getVehicleImage(vehicle);
-  const name = (vehicle.name || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-  const category = (vehicle.category || '').replace(/</g, '&lt;');
-  const defaultDeposit = vehicle.type === 'car' ? 3000 : 1000;
-  const deposit = (vehicle.deposit !== undefined && vehicle.deposit !== null) ? vehicle.deposit : defaultDeposit;
-  const hasMultipleTransmissions = vehicle.transmissions && vehicle.transmissions.length > 1;
-  const isCar = vehicle.type === 'car';
-
-  // Sort transmissions: Manual first, then Automatic, then others
-  const sortedTransmissions = vehicle.transmissions ? [...vehicle.transmissions].sort((a, b) => {
-    const order = { 'Manual': 0, 'Automatic': 1 };
-    return (order[a.type] || 2) - (order[b.type] || 2);
-  }) : [];
-
-  // Only show transmission buttons for cars
-  const transmissionButtons = isCar ? sortedTransmissions.map(trans => `
-    <button onclick="selectVehicle('${(vehicle.id || '').replace(/'/g, "\\'")}', '${trans.type}')" class="transmission-btn">
-      <span class="transmission-label">${trans.type}</span>
-      <span class="transmission-price">₹${trans.price}</span>
-    </button>
-  `).join('') : '';
-
-  // Specs grid: Show fuel and seats for cars, minimal for bikes
-  const specsGrid = isCar ? `
-    <div class="spec-item">
-      <svg class="spec-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-      <span>${(vehicle.fuel || '').replace(/</g, '&lt;')}</span>
-    </div>
-    <div class="spec-item">
-      <svg class="spec-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      <span>${vehicle.seats || 0} Seats</span>
-    </div>
-  ` : '';
-
-  // For bikes: show price and a select button instead of transmission options
-  const bikePrice = !isCar && vehicle.pricePerDay ? `
-    <div class="bike-price-display">₹${vehicle.pricePerDay}<span class="price-unit">/day</span></div>
-  ` : '';
-
-  const bikeSelectButton = !isCar ? `
-    <button onclick="selectVehicle('${(vehicle.id || '').replace(/'/g, "\\'")}')" class="transmission-btn" style="grid-column: span 2;">
-      <span class="transmission-label">Select This Bike</span>
-      <span class="transmission-price">Book Now</span>
-    </button>
-  ` : '';
-
-  const actionSection = isCar ?
-    `<div class="transmission-options">${transmissionButtons}</div>` :
-    `${bikePrice}<div class="transmission-options">${bikeSelectButton}</div>`;
-
-  const imgUrl = preferWebP(img);
-  return `
-    <div class="premium-vehicle-card">
-      <div class="vehicle-image-container">
-        <img src="${imgUrl}" alt="${name} - ${category} | RoyalGoaRide" class="vehicle-image" loading="lazy" onerror="this.src='${PLACEHOLDER_IMAGE}'">
-        <div class="category-badge">${category}</div>
-        <div class="deposit-badge">DEPOSIT<br>₹${deposit}</div>
-      </div>
-      <div class="card-content">
-        <h3 class="vehicle-name">${name}</h3>
-        ${specsGrid ? `<div class="specs-grid">${specsGrid}</div>` : ''}
-        ${actionSection}
-        ${isCar ? `<div class="price-disclaimer">* Per day price excludes fuel</div>` : ''}
-        <div class="vehicle-action-buttons">
-          <button class="btn-vehicle btn-whatsapp-small" onclick="handleWhatsAppClick(event)" title="Chat on WhatsApp">
-            <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004c-1.579 0-3.051.46-4.315 1.338l-.31-.156-3.215-.666.679 3.126.156.31c-.956 1.294-1.466 2.93-1.466 4.62 0 4.446 3.612 8.057 8.06 8.057 2.159 0 4.19-.822 5.718-2.32 1.528-1.499 2.37-3.55 2.37-5.738 0-4.45-3.612-8.057-8.06-8.057M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0"/>
-            </svg>
-            WhatsApp
-          </button>
-          <button class="btn-vehicle btn-call-small" onclick="handleCallClick(event)" title="Call Now">
-            <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-              <path d="M16.92v3.5c0 .88-.72 1.58-1.6 1.58-.65 0-1.27-.28-1.7-.74-.63-.68-1.19-1.44-1.63-2.27l-3.57-7.89c-.16-.37-.15-.79.01-1.16.17-.37.46-.64.82-.76l2.98-.84c.49-.14.98.02 1.31.42.49.58 1.14 1.08 1.86 1.41.55.25 1.04.65 1.39 1.15.35.5.57 1.08.65 1.68v4.62zm-7-1.5v-4.62c-.08-.6-.3-1.18-.65-1.68-.35-.5-.84-.9-1.39-1.15-.72-.33-1.37-.83-1.86-1.41-.33-.4-.82-.56-1.31-.42l-2.98.84c-.36.12-.65.39-.82.76-.16.37-.17.79-.01 1.16l3.57 7.89c.44.83 1 1.59 1.63 2.27.43.46 1.05.74 1.7.74.88 0 1.6-.7 1.6-1.58"/>
-            </svg>
-            Call
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderVehicleCard(vehicle) {
-  if (!vehicle) return '';
-  const img = getVehicleImage(vehicle);
-  const name = (vehicle.name || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-  const category = (vehicle.category || '').replace(/</g, '&lt;');
-  const isDualTransmission = vehicle.transmission === 'Manual ';
-  const defaultDeposit = vehicle.type === 'car' ? 3000 : 1000;
-  const deposit = (vehicle.deposit !== undefined && vehicle.deposit !== null) ? vehicle.deposit : defaultDeposit;
-
-  const imgUrl = preferWebP(img);
-  return `
-    <div class="vehicle-card ${isDualTransmission ? 'ring-2 ring-blue-400 shadow-lg' : ''}">
-      <div class="vehicle-image">
-        <img src="${imgUrl}" alt="${name} - ${category} | RoyalGoaRide" loading="lazy" onerror="this.src='${PLACEHOLDER_IMAGE}'">
-        ${isDualTransmission ? '<div class="absolute top-12 right-4 bg-blue-500 text-white px-3 py-1.5 rounded-full shadow-lg text-xs font-bold">DUAL OPTIONS</div>' : ''}
-        <div class="absolute top-4 right-4 px-4 py-1.5 rounded-full shadow-sm vehicle-price-badge">
-          <span class="text-primary font-bold">₹${vehicle.pricePerDay || 0}</span>
-          <span class="text-xs ml-1 text-slate-500">/ day</span>
-        </div>
-        <div class="absolute top-4 left-4 bg-primary px-3 py-1 rounded-full shadow-sm">
-          <span class="text-white text-xs font-bold uppercase">${category}</span>
-        </div>
-      </div>
-      <div class="p-6 flex flex-col flex-grow">
-        <h3 class="text-xl font-bold mb-4 font-serif">${name}</h3>
-        ${isDualTransmission ? '<div class="mb-4 p-2 bg-blue-50 border-l-4 border-blue-400 rounded"><span class="text-sm font-semibold text-blue-700"></span></div>' : ''}
-        <div class="grid grid-cols-2 gap-3 mb-6">
-          <div class="flex items-center text-sm text-slate-500">
-            <svg class="w-4 h-4 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-            ${(vehicle.transmission || '').replace(/</g, '&lt;')}
-          </div>
-          <div class="flex items-center text-sm text-slate-500">
-            <svg class="w-4 h-4 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-            ${(vehicle.fuel || '').replace(/</g, '&lt;')}
-          </div>
-          <div class="flex items-center text-sm text-slate-500">
-            <svg class="w-4 h-4 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            ${vehicle.seats || 0} Seats
-          </div>
-        </div>
-        <p class="deposit-badge">💰 Security Deposit: ₹${deposit}</p>
-        <div style="margin-top: auto;">
-          <button onclick="selectVehicle('${(vehicle.id || '').replace(/'/g, "\\'")}')" class="vehicle-card-btn">Select Vehicle <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
-          <div class="vehicle-action-buttons">
-            <button class="btn-vehicle btn-whatsapp-small" onclick="handleWhatsAppClick(event)" title="Chat on WhatsApp">
-              <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004c-1.579 0-3.051.46-4.315 1.338l-.31-.156-3.215-.666.679 3.126.156.31c-.956 1.294-1.466 2.93-1.466 4.62 0 4.446 3.612 8.057 8.06 8.057 2.159 0 4.19-.822 5.718-2.32 1.528-1.499 2.37-3.55 2.37-5.738 0-4.45-3.612-8.057-8.06-8.057M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0"/>
-              </svg>
-              WhatsApp
-            </button>
-            <button class="btn-vehicle btn-call-small" onclick="handleCallClick(event)" title="Call Now">
-              <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-                <path d="M16.92v3.5c0 .88-.72 1.58-1.6 1.58-.65 0-1.27-.28-1.7-.74-.63-.68-1.19-1.44-1.63-2.27l-3.57-7.89c-.16-.37-.15-.79.01-1.16.17-.37.46-.64.82-.76l2.98-.84c.49-.14.98.02 1.31.42.49.58 1.14 1.08 1.86 1.41.55.25 1.04.65 1.39 1.15.35.5.57 1.08.65 1.68v4.62zm-7-1.5v-4.62c-.08-.6-.3-1.18-.65-1.68-.35-.5-.84-.9-1.39-1.15-.72-.33-1.37-.83-1.86-1.41-.33-.4-.82-.56-1.31-.42l-2.98.84c-.36.12-.65.39-.82.76-.16.37-.17.79-.01 1.16l3.57 7.89c.44.83 1 1.59 1.63 2.27.43.46 1.05.74 1.7.74.88 0 1.6-.7 1.6-1.58"/>
-              </svg>
-              Call
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderFeatureCard(title, desc, icon) {
-  const icons = {
-    'map-pin': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>',
-    'calendar': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>',
-    'phone': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>',
-    'star': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>'
-  };
-  const svgPath = icons[icon] || icons['star'];
-  return `
-    <div class="feature-card">
-      <div class="feature-icon"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">${svgPath}</svg></div>
-      <h3 class="font-bold text-lg mb-2">${(title || '').replace(/</g, '&lt;')}</h3>
-      <div class="text-sm text-slate-500 leading-relaxed">${(desc || '').replace(/</g, '&lt;')}</div>
-    </div>
-  `;
-}
-
-function renderBookingFeature(text, icon) {
-  const icons = {
-    'map-pin': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>',
-    'message': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>',
-    'check': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
-  };
-  const svgPath = icons[icon] || icons['check'];
-  return `
-    <div class="flex items-center space-x-4">
-      <div class="w-10 h-10 rounded-full flex items-center justify-center text-primary booking-feature-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">${svgPath}</svg></div>
-      <span class="font-bold">${(text || '').replace(/</g, '&lt;')}</span>
-    </div>
-  `;
-}
-
-function renderContactCard(title, info, icon) {
-  const icons = {
-    'phone': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>',
-    'mail': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>',
-    'map-pin': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>'
-  };
-  const svgPath = icons[icon] || icons['map-pin'];
-  const extraClass = icon === 'phone' ? 'font-bold' : '';
-  const extraStyle = icon === 'map-pin' ? 'font-size: 0.875rem;' : '';
-  return `
-    <div class="glass p-10 rounded-3xl text-center hover:border-primary transition-colors contact-card">
-      <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-primary contact-card-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">${svgPath}</svg></div>
-      <h3 class="font-bold mb-2">${(title || '').replace(/</g, '&lt;')}</h3>
-      <p class="${extraClass}" style="color: var(--slate-500); ${extraStyle}"><a href="${icon === 'phone' ? 'tel:9975356697' : ''}">${(info || '').replace(/</g, '&lt;')}</a></p>
-    </div>
-  `;
-}
-
-// ============================================
-// SECTION 8: EVENT HANDLERS
-// ============================================
-
-function handleSearchInput(value) {
-  searchQuery = value || '';
-  renderPage();
-}
-
-function clearSearch() {
-  searchQuery = '';
-  renderPage();
-}
-
-function handleAiHelp() {
-  const input = $('ai-prompt');
-  const btn = $('ai-submit-btn');
-  const resultDiv = $('ai-result');
-  if (!input || !btn || !resultDiv) return;
-  const query = (input.value || '').trim();
-  if (!query) return;
-
-  btn.textContent = 'Thinking...';
-  btn.disabled = true;
-  resultDiv.classList.add('hidden');
-
-  setTimeout(() => {
-    const prompt = query.toLowerCase();
-    let response = '';
-    if (prompt.includes('4 people') || prompt.includes('family')) {
-      response = 'For 4 people, I recommend the Hyundai Creta or Maruti Ertiga. The Creta offers premium comfort with great features, while the Ertiga provides spacious seating perfect for families. Both are ideal for Goa\'s coastal roads!';
-    } else if (prompt.includes('bike') || prompt.includes('solo')) {
-      response = 'For a solo adventure, the Royal Enfield Hunter 350 is perfect! Modern, agile, and great for Goa\'s scenic routes. If you prefer a scooter, the Activa 6G offers comfort and easy handling.';
-    } else if (prompt.includes('luxury') || prompt.includes('premium')) {
-      response = 'For a luxury experience, consider the Toyota Fortuner or Audi A6. The Fortuner offers commanding road presence, while the A6 delivers German engineering excellence. Both ensure a memorable Goa trip!';
-    } else if (prompt.includes('beach') || prompt.includes('offroad')) {
-      response = 'For beach adventures and off-roading, the Mahindra Thar (Hardtop or Convertible) is your best bet! With 4x4 capability and rugged build, it\'s perfect for Goa\'s diverse terrain.';
-    } else {
-      response = 'Based on your needs, I\'d suggest the Maruti Brezza for a balanced experience - compact yet spacious, with great ground clearance for Goa\'s roads. Or consider the Hyundai i20 for city drives with premium features!';
-    }
-    resultDiv.textContent = response;
-    resultDiv.classList.remove('hidden');
-    btn.textContent = 'Get Recommendation';
-    btn.disabled = false;
-  }, 1500);
-}
-
-function handleBookingSubmit(event) {
-  event.preventDefault();
-  const nameEl = $('booking-name');
-  const phoneEl = $('booking-phone');
-  const pickupEl = $('booking-pickup');
-  const dateEl = $('booking-date');
-  const durationEl = $('booking-duration');
-  const transmissionEl = $('booking-transmission');
-  const pickupLocationEl = $('booking-pickup-location');
-  const dropLocationEl = $('booking-drop-location');
-  const needChargerEl = $('booking-need-charger');
-
-  if (!nameEl || !phoneEl) {
-    console.error('Booking form missing required elements', { nameEl, phoneEl });
-    alert('Booking form is not available. Please refresh the page.');
-    return;
-  }
-
-  const name = (nameEl.value || '').trim();
-  const phone = (phoneEl.value || '').trim();
-
-  if (!name) {
-    console.error('Validation error: name empty');
-    alert('Please enter your name.');
-    nameEl.focus();
-    return;
-  }
-
-  if (!phone) {
-    console.error('Validation error: phone empty');
-    alert('Please enter your phone number.');
-    phoneEl.focus();
-    return;
-  }
-
-  const pickup = pickupEl ? (pickupEl.value || '') : '';
-  const date = dateEl ? (dateEl.value || '') : '';
-  // Convert date from YYYY-MM-DD to DD-MM-YYYY for WhatsApp message
-  let formattedDate = '';
-  if (date) {
-    try {
-      const parts = date.split('-');
-      if (parts.length === 3) {
-        // parts: [YYYY, MM, DD]
-        formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-      } else {
-        formattedDate = date;
-      }
-    } catch (err) {
-      console.error('Date formatting error', err, { date });
-      formattedDate = date;
-    }
-  }
-  const duration = durationEl ? (durationEl.value || '1') : '1';
-  const transmission = transmissionEl ? (transmissionEl.value || '') : '';
-  const pickupLocation = pickupLocationEl ? (pickupLocationEl.value || '') : '';
-  const dropLocation = dropLocationEl ? (dropLocationEl.value || '') : '';
-  const needCharger = needChargerEl ? (needChargerEl.checked ? 'Yes' : 'No') : 'No';
-
-  bookingFormData = { name, phone, pickup, date, duration, transmission, pickupLocation, dropLocation, needCharger };
-  const vehicleName = selectedVehicle ? (selectedVehicle.name || 'Not specified') : 'Not specified';
-
-  // Build a plain-text message then encode it once for the URL
-  let plainMessage = `*New Booking Request from RoyalGoa*\n\nCustomer: ${name}\nPhone: ${phone}\nVehicle: ${vehicleName}\n`;
-  if (transmission) plainMessage += `Transmission: ${transmission}\n`;
-  if (pickup) plainMessage += `Pickup Station: ${pickup}\n`;
-  if (pickupLocation) plainMessage += `Pickup Location: ${pickupLocation}\n`;
-  if (dropLocation) plainMessage += `Drop Location: ${dropLocation}\n`;
-  if (date) plainMessage += `Date: ${formattedDate}\n`;
-  plainMessage += `Duration: ${duration} days\nNeed Charger: ${needCharger}\n\nPlease confirm availability for this ride.`;
-
-  const encoded = encodeURIComponent(plainMessage);
-  const whatsappURL = `https://wa.me/919975356697?text=${encoded}`;
-
-  console.log('handleBookingSubmit: sending to WhatsApp', { whatsappURL, bookingFormData });
-
-  try {
-    // Use location.href to avoid popup blockers
-    window.location.href = whatsappURL;
-  } catch (err) {
-    console.error('Navigation to WhatsApp failed', err);
-    alert('Unable to open WhatsApp automatically. Please contact 99753 56697 with your booking details.');
-  }
-
-  bookingStep = 2;
-  renderPage();
-}
-
-// ============================================
-// CALL AND WHATSAPP BUTTON FUNCTIONALITY
-// ============================================
-
-const PHONE_NUMBER = '99753 56697';
-const PHONE_NUMBER_FORMATTED = '+919975356697';
-const WHATSAPP_MESSAGE = 'Hello RoyalGoaRide, I want to book a car in Goa.';
-
-/**
- * Handle WhatsApp button click with analytics tracking
- */
-function handleWhatsAppClick(event) {
-  if (event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  // Track event in Google Analytics
-  trackAnalyticsEvent('whatsapp_click', {
-    'button_location': getButtonLocation(event),
-    'timestamp': new Date().toISOString(),
-    'page': getCurrentPage()
+    grouped[key].variants.push({ transmission: v.transmission, price: v.pricePerDay });
   });
 
-  // Remove any extra spaces and encode properly
-  const message = WHATSAPP_MESSAGE.trim();
-  const encodedMessage = encodeURIComponent(message);
-  const whatsappURL = `https://wa.me/${PHONE_NUMBER_FORMATTED}?text=${encodedMessage}`;
+  const cards = Object.values(grouped);
 
-  try {
-    // Open WhatsApp in new tab to avoid blocking
-    window.open(whatsappURL, '_blank', 'noopener,noreferrer');
-  } catch (error) {
-    console.error('WhatsApp link error:', error);
-    alert(`Open WhatsApp and message our team at ${PHONE_NUMBER}`);
-  }
-}
+  container.innerHTML = cards.map((v, i) => {
+    // Sort: Automatic first
+    const variants = v.variants.sort((a, b) => {
+      const aAuto = a.transmission.toLowerCase().includes('auto');
+      const bAuto = b.transmission.toLowerCase().includes('auto');
+      return bAuto - aAuto;
+    });
 
-/**
- * Handle Call button click with analytics tracking
- */
-function handleCallClick() {
-  window.location.href = "tel:9975356697";
-}
+    const hasAuto = variants.find(vv => vv.transmission.toLowerCase().includes('auto'));
+    const hasManual = variants.find(vv => !vv.transmission.toLowerCase().includes('auto') || vv.transmission.toLowerCase() === 'manual');
 
-/**
- * Track custom event in Google Analytics 4
- */
-function trackAnalyticsEvent(eventName, eventData = {}) {
-  try {
-    // Check if gtag is available
-    if (typeof gtag !== 'undefined') {
-      gtag('event', eventName, eventData);
-      console.log(`Analytics event tracked: ${eventName}`, eventData);
+    // calculate minimum price for badge
+    const minPrice = variants.reduce((min, v) => v.price < min ? v.price : min, variants[0].price);
+
+    // ── Price boxes ──
+    let priceBoxesHTML = '';
+    let onlyNoteHTML = '';
+
+    if (hasAuto && hasManual) {
+      priceBoxesHTML = `
+        <div class="price-row">
+          <button class="price-btn auto" onclick="sendBookingWA('${v.type}','${v.name}','Automatic',${hasAuto.price},${v.deposit})">
+            ⚙ Automatic ₹${hasAuto.price.toLocaleString('en-IN')}
+          </button>
+          <button class="price-btn manual" onclick="sendBookingWA('${v.type}','${v.name}','Manual',${hasManual.price},${v.deposit})">
+            ⚙ Manual ₹${hasManual.price.toLocaleString('en-IN')}
+          </button>
+        </div>`;
+    } else if (hasAuto) {
+      priceBoxesHTML = `
+        <div class="price-row">
+          <button class="price-btn auto" onclick="sendBookingWA('${v.type}','${v.name}','Automatic',${hasAuto.price},${v.deposit})">
+            ⚙ Automatic ₹${hasAuto.price.toLocaleString('en-IN')}
+          </button>
+        </div>`;
+      onlyNoteHTML = `<div class="vc-only-note">Automatic only</div>`;
     } else {
-      console.warn('Google Analytics (gtag) not initialized');
+      priceBoxesHTML = `
+        <div class="price-row">
+          <button class="price-btn manual" onclick="sendBookingWA('${v.type}','${v.name}','Manual',${hasManual.price},${v.deposit})">
+            ⚙ Manual ₹${hasManual.price.toLocaleString('en-IN')}
+          </button>
+        </div>`;
+      onlyNoteHTML = `<div class="vc-only-note">Manual only</div>`;
     }
-  } catch (error) {
-    console.error('Analytics tracking error:', error);
-  }
-}
 
-/**
- * Determine button location for analytics
- */
-function getButtonLocation(event) {
-  if (!event) return 'floating';
+    // ── WhatsApp message builder per variant ──
+    function buildWAMsg(vehicleType, name, transmission, price, deposit) {
+      if (vehicleType === "car") {
+        return encodeURIComponent(
+          `🚗 *Vehicle Booking Inquiry - RoyalGoaRide*
 
-  const target = event.target.closest('button');
-  if (!target) return 'unknown';
+Hello Team 👋,
+Car: ${name}
+Transmission: ${transmission}
+Price: ₹${price.toLocaleString('en-IN')} per day
+Pickup Date:
+Return Date:
 
-  if (target.id === 'whatsapp-btn' || target.id === 'call-btn') {
-    return 'floating';
-  } else if (target.id === 'navbar-whatsapp' || target.id === 'navbar-call') {
-    return 'navbar';
-  } else if (target.classList.contains('btn-vehicle')) {
-    return 'vehicle_card';
-  }
+🔥 Only 5 Cars Left Today
+⭐ Real customer reviews available
+🚗 Airport pickup available
 
-  return 'other';
-}
+Please share availability and next steps. Thank you!`
+        );
+      }
 
-/**
- * Get current page for analytics
- */
-function getCurrentPage() {
-  const currentPage = document.body.getAttribute('data-page') || 'home';
-  return currentPage;
-}
+      if (vehicleType === "bike") {
+        return encodeURIComponent(
+          `🏍️ *Bike Booking Inquiry - RoyalGoaRide*
 
-/**
- * Show call alert on desktop browsers
- */
-function showCallAlert() {
-  const message = `Call RoyalGoaRide now!\n\n📞 99753 56697\n\nOur team is ready to assist you with the best car rental experience in Goa.`;
-  alert(message);
+Hello Team 👋, I'm interested in booking:
 
-  // Optionally copy to clipboard
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText('99753 56697');
-  }
-}
+🏍️ *Bike:* ${name}
+⚙️ *Transmission:* ${transmission}
+💰 *Price:* ₹${price.toLocaleString('en-IN')}/day
+🔒 *Refundable Deposit:* ₹${deposit.toLocaleString('en-IN')}
 
-/**
- * Initialize call and WhatsApp buttons
- * Call this function when DOM is loaded
- */
-function initializeContactButtons() {
-  // Verify buttons exist and are accessible
-  const floatingWhatsApp = document.getElementById('whatsapp-btn');
-  const floatingCall = document.getElementById('call-btn');
+Please confirm:
+✅ Availability
+📍 Pickup location
+📄 Required documents
+💳 Helmet & deposit info
 
-  if (floatingWhatsApp) {
-    floatingWhatsApp.addEventListener('click', handleWhatsAppClick);
-  }
+🌴 Excited for Goa ride! 🏖️`
+        );
+      }
+    }
 
-  if (floatingCall) {
-    floatingCall.addEventListener('click', handleCallClick);
-  }
 
-  console.log('Contact buttons initialized successfully');
-}
 
-/**
- * Add contact buttons to vehicle cards dynamically
- * Call this when rendering vehicle cards
- */
-function addContactButtonsToVehicleCard(cardElement, vehicleData = null) {
-  // Check if buttons already exist
-  if (cardElement.querySelector('.vehicle-action-buttons')) {
-    return;
-  }
-
-  const buttonsHTML = `
-        <div class="vehicle-action-buttons">
-            <button class="btn-vehicle btn-whatsapp-small" onclick="handleWhatsAppClick(event)" title="Chat on WhatsApp">
-                <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004c-1.579 0-3.051.46-4.315 1.338l-.31-.156-3.215-.666.679 3.126.156.31c-.956 1.294-1.466 2.93-1.466 4.62 0 4.446 3.612 8.057 8.06 8.057 2.159 0 4.19-.822 5.718-2.32 1.528-1.499 2.37-3.55 2.37-5.738 0-4.45-3.612-8.057-8.06-8.057M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0\"/>
-                </svg>
-                WhatsApp
-            </button>
-            <button class="btn-vehicle btn-call-small" onclick="handleCallClick(event)" title="Call Now">
-                <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-                    <path d="M16.92v3.5c0 .88-.72 1.58-1.6 1.58-.65 0-1.27-.28-1.7-.74-.63-.68-1.19-1.44-1.63-2.27l-3.57-7.89c-.16-.37-.15-.79.01-1.16.17-.37.46-.64.82-.76l2.98-.84c.49-.14.98.02 1.31.42.49.58 1.14 1.08 1.86 1.41.55.25 1.04.65 1.39 1.15.35.5.57 1.08.65 1.68v4.62zm-7-1.5v-4.62c-.08-.6-.3-1.18-.65-1.68-.35-.5-.84-.9-1.39-1.15-.72-.33-1.37-.83-1.86-1.41-.33-.4-.82-.56-1.31-.42l-2.98.84c-.36.12-.65.39-.82.76-.16.37-.17.79-.01 1.16l3.57 7.89c.44.83 1 1.59 1.63 2.27.43.46 1.05.74 1.7.74.88 0 1.6-.7 1.6-1.58\"/>
-                </svg>
-                Call
-            </button>
+    return `
+    <div class="vc" data-index="${i}">
+      <div class="vc-img-wrap">
+        <div class="vc-price-badge">₹${minPrice.toLocaleString('en-IN')}</div>
+        <img src="${v.image}" alt="${v.name}" loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=800'">
+        <div class="vc-img-grad"></div>
+        <span class="vc-cat">${v.category}</span>
+        <div class="vc-deposit-badge">
+          <span class="vc-deposit-badge-label">Deposit</span>
+          <span class="vc-deposit-badge-amount">₹${v.deposit.toLocaleString('en-IN')}</span>
         </div>
-    `;
+      </div>
+      <div class="vc-body">
+        <div class="vc-name">${v.name}</div>
+        <div class="vc-specs">
+          <span><i class="bi bi-fuel-pump-fill"></i> ${v.fuel}</span>
+          <span><i class="bi bi-people-fill"></i> ${v.seats} Seats</span>
+        </div>
+        ${priceBoxesHTML}
+        ${onlyNoteHTML}
+        <div class="vc-fuel-note">* Per day price excludes fuel</div>
+      </div>
+      <div class="vc-btns">
+        <a href="tel:+919975356697" class="vc-btn-call-full">
+          <i class="bi bi-telephone-fill"></i> CALL
+        </a>
+      </div>
+    </div>`;
+  }).join('');
 
-  cardElement.insertAdjacentHTML('beforeend', buttonsHTML);
+  // done
 }
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeContactButtons);
-} else {
-  initializeContactButtons();
+window.bookVehicleWA = function (name, price, deposit) {
+  const dep = deposit ? ` | Deposit: ₹${deposit.toLocaleString('en-IN')}` : '';
+  const msg = encodeURIComponent(`Hi, I want to book: ${name} — ₹${price.toLocaleString('en-IN')}/day${dep}. Please confirm availability and dates.`);
+  window.open(`https://wa.me/919975356697?text=${msg}`, '_blank');
+};
+
+// ── TRIPS ──
+function initTrips() {
+  const grid = document.getElementById('trips-grid');
+  if (!grid) return;
+
+  grid.innerHTML = trips.map((t, i) => `
+    <div class="trip-card" style="animation-delay:${i * 0.1}s">
+      <div class="trip-img">
+        <img src="${t.image}" alt="${t.title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=800'">
+        <div class="trip-img-overlay"></div>
+        <span class="trip-duration">${t.duration}</span>
+        <span class="trip-label">${t.title}</span>
+      </div>
+      <div class="trip-body">
+        <div class="trip-route"><i class="bi bi-geo-alt"></i> ${t.route}</div>
+        <p class="trip-desc">${t.desc}</p>
+        <div class="trip-tags">${t.tags.map(tag => `<span class="trip-tag">${tag}</span>`).join('')}</div>
+        <div class="trip-car-rec"><i class="bi bi-car-front"></i> ${t.carRec}</div>
+      </div>
+    </div>
+  `).join('');
 }
 
-// ============================================
-// END OF MERGED main.js FILE
-// ============================================
+// ── TIMELINE ──
+function initTimeline() {
+  const steps = document.querySelectorAll('.timeline-step');
+  const progress = document.getElementById('timeline-progress');
 
-// Safety: ensure renderer functions exist (temporary fallbacks) — they will be overridden by real implementations if present.
-if (typeof renderHomePage !== 'function') {
-  function renderHomePage() { return '<div class="p-20 text-center">Home content unavailable.</div>'; }
-}
-if (typeof renderVehiclesPage !== 'function') {
-  function renderVehiclesPage() { return '<div class="p-20 text-center">Vehicles content unavailable.</div>'; }
-}
-if (typeof renderBookingPage !== 'function') {
-  function renderBookingPage() { return '<div class="p-20 text-center">Booking content unavailable.</div>'; }
-}
-if (typeof renderContactPage !== 'function') {
-  function renderContactPage() { return '<div class="p-20 text-center">Contact content unavailable.</div>'; }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  steps.forEach((step, i) => {
+    step.style.transitionDelay = `${i * 0.15}s`;
+    observer.observe(step);
+  });
+
+  // Animate progress bar
+  if (progress) {
+    const sectionObserver = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setTimeout(() => { progress.style.height = '100%'; }, 300);
+      }
+    }, { threshold: 0.1 });
+    const section = document.getElementById('booking');
+    if (section) sectionObserver.observe(section);
+  }
 }
 
+// ── FAQ ──
+function initFAQ() {
+  // setup done via onclick in HTML
+}
 
+window.toggleFaq = function (btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+
+  // Close all
+  document.querySelectorAll('.faq-q.open').forEach(q => {
+    q.classList.remove('open');
+    q.nextElementSibling.classList.remove('open');
+  });
+
+  if (!isOpen) {
+    btn.classList.add('open');
+    answer.classList.add('open');
+  }
+};
+
+// ── SCROLL ANIMATIONS ──
+function initScrollAnimations() {
+  const animateEls = document.querySelectorAll(
+    '.review-card, .trip-card, .contact-cta-block, .contact-info'
+  );
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  animateEls.forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = `opacity 0.6s ease ${i * 0.08}s, transform 0.6s ease ${i * 0.08}s`;
+    observer.observe(el);
+  });
+
+  // Parallax orbs on hero
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const orb1 = document.querySelector('.orb-1');
+    const orb2 = document.querySelector('.orb-2');
+    if (orb1) orb1.style.transform = `translateY(${scrolled * 0.15}px)`;
+    if (orb2) orb2.style.transform = `translateY(${scrolled * -0.1}px)`;
+  }, { passive: true });
+}
+
+// ── GLOBAL HELPERS ──
+window.handleWhatsAppClick = function () {
+  window.open('https://wa.me/919975356697?text=Hi%2C%20I%20want%20to%20book%20a%20car', '_blank');
+};
+
+window.handleCallClick = function () {
+  window.location.href = 'tel:+919975356697';
+};
+
+// Legacy compatibility shims for any leftover inline calls
+window.navigateTo = function (page) {
+  const map = { home: '#hero', cars: '#fleet', bikes: '#fleet', booking: '#booking', contact: '#contact' };
+  const target = document.querySelector(map[page] || '#hero');
+  if (target) target.scrollIntoView({ behavior: 'smooth' });
+};
+
+window.toggleDarkMode = function () { };
+window.toggleMobileMenu = function () {
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (hamburger) hamburger.classList.toggle('open');
+  if (mobileMenu) mobileMenu.classList.toggle('open');
+};
+
+// ── SEND BOOKING MESSAGE ──
+function sendBookingWA(type, name, transmission, price, deposit) {
+  let msg = '';
+
+  if (type === 'car') {
+    msg = `🚗 *Vehicle Booking Inquiry - RoyalGoaRide*
+
+Car: ${name}
+Transmission: ${transmission}
+Price: ₹${price}/day
+Deposit: ₹${deposit}
+
+Please check availability & booking process.`;
+  }
+
+  if (type === 'bike') {
+    msg = `🏍️ *Bike Booking Inquiry - RoyalGoaRide*
+
+Bike: ${name}
+Price: ₹${price}/day
+Deposit: ₹${deposit}
+
+Please confirm availability.`;
+  }
+
+  window.open('https://wa.me/919975356697?text=' + encodeURIComponent(msg), '_blank');
+}
+
+console.log('RoyalGoaRide Cinematic v3.0 — Loaded');
