@@ -8,209 +8,164 @@
 // ══════════════════════════════════════════════
 
 const vehicles = [
-
-/* ───────── MOST POPULAR CARS FIRST ───────── */
-
-// BALENO
-{
-id:'baleno',
-name:'Maruti Baleno',
-type:'car',
-category:'Luxury Hatchback',
-pricePerDay:1300,
-deposit:3000,
-image:'https://image2url.com/r2/default/images/1771081605318-cf7ecfe1-543f-4a35-8672-53cdda6ce892.jpeg',
-transmission:'Manual',
-fuel:'Petrol',
-seats:5,
-features:['Manual Available','Spacious Cabin','360 Camera','Cruise Control']
-},
-{
-id:'baleno',
-name:'Maruti Baleno',
-type:'car',
-category:'Luxury Hatchback',
-pricePerDay:1500,
-deposit:3000,
-image:'https://image2url.com/r2/default/images/1771081605318-cf7ecfe1-543f-4a35-8672-53cdda6ce892.jpeg',
-transmission:'Automatic',
-fuel:'Petrol',
-seats:5,
-features:['Auto Available','Spacious Cabin','360 Camera','Cruise Control']
-},
-
-// SWIFT
-{
-id:'swift',
-name:'Maruti Swift',
-type:'car',
-category:'Premium Hatchback',
-pricePerDay:1500,
-deposit:3000,
-image:'https://image2url.com/r2/default/images/1771086979849-965ca50c-72cc-4015-a047-c020fa50af0d.jpeg',
-transmission:'Automatic',
-fuel:'Petrol',
-seats:5,
-features:['Auto Available','Sporty Drive','Keyless Entry','Bluetooth']
-},
-{
-id:'swift',
-name:'Maruti Swift',
-type:'car',
-category:'Premium Hatchback',
-pricePerDay:1200,
-deposit:3000,
-image:'https://image2url.com/r2/default/images/1771086979849-965ca50c-72cc-4015-a047-c020fa50af0d.jpeg',
-transmission:'Manual',
-fuel:'Petrol',
-seats:5,
-features:['Manual Available','Sporty Drive','Keyless Entry','Bluetooth']
-},
-
-// I20
-{
-id:'i20',
-name:'Hyundai i20',
-type:'car',
-category:'Luxury Hatchback',
-pricePerDay:1600,
-deposit:3000,
-image:'https://image2url.com/r2/default/images/1771084107396-de073f29-76b3-4b8d-9009-be3059a77fba.jpeg',
-transmission:'Automatic',
-fuel:'Petrol',
-seats:5,
-features:['Auto Available','Sunroof','Premium Audio','Air Purifier']
-},
-{
-id:'i20',
-name:'Hyundai i20',
-type:'car',
-category:'Luxury Hatchback',
-pricePerDay:1200,
-deposit:3000,
-image:'https://image2url.com/r2/default/images/1771085775326-5bfe945e-d68a-4474-8584-e0faa4d08a1a.jpeg',
-transmission:'Manual',
-fuel:'Petrol',
-seats:5,
-features:['Manual Available','Sunroof','Premium Audio','Air Purifier']
-},
-
-// IGNIS
-{
-id:'ignis',
-name:'Maruti Ignis',
-type:'car',
-category:'Compact Hatchback',
-pricePerDay:1400,
-deposit:3000,
-image:'https://image2url.com/r2/default/images/1771085514586-f48442cc-255d-424b-8a86-bd933470a02e.jpeg',
-transmission:'Automatic',
-fuel:'Petrol',
-seats:5,
-features:['Auto Available','Compact Design','Touchscreen','Reverse Sensors']
-},
-{
-id:'ignis',
-name:'Maruti Ignis',
-type:'car',
-category:'Compact Hatchback',
-pricePerDay:1200,
-deposit:3000,
-image:'https://image2url.com/r2/default/images/1771085703961-71ea43b9-14f6-452a-a93d-1d8b86afdd50.jpeg',
-transmission:'Manual',
-fuel:'Petrol',
-seats:5,
-features:['Manual Available','Compact Design','Touchscreen','Reverse Sensors']
-},
-
-/* ───────── OTHER CARS ───────── */
-
-// BREZZA
-{
-id:'brezza',
-name:'Maruti Brezza',
-type:'car',
-category:'Compact SUV',
-pricePerDay:2000,
-deposit:3000,
-image:'https://image2url.com/r2/default/images/1771080613820-4e08e3eb-6cf3-456d-af67-d620cf20afa2.jpeg',
-transmission:'Manual',
-fuel:'Petrol',
-seats:5,
-features:['Manual Available','Sunroof','High Ground Clearance','Smart Hybrid']
-},
-{
-id:'brezza',
-name:'Maruti Brezza',
-type:'car',
-category:'Compact SUV',
-pricePerDay:2500,
-deposit:3000,
-image:'https://image2url.com/r2/default/images/1771080613820-4e08e3eb-6cf3-456d-af67-d620cf20afa2.jpeg',
-transmission:'Automatic',
-fuel:'Petrol',
-seats:5,
-features:['Auto Available','Sunroof','High Ground Clearance','Smart Hybrid']
-},
-
-// CRETA
-{
-id:'creta',
-name:'Hyundai Creta',
-type:'car',
-category:'Premium SUV',
-pricePerDay:3500,
-deposit:5000,
-image:'https://image2url.com/r2/default/images/1771082168034-3cea15fd-961e-441b-827a-e772f7a0db43.png',
-transmission:'Automatic',
-fuel:'Diesel',
-seats:5,
-features:['Auto Available','Panoramic Sunroof','Ventilated Seats','Bose Speakers']
-},
-{
-id:'creta',
-name:'Hyundai Creta',
-type:'car',
-category:'Premium SUV',
-pricePerDay:3000,
-deposit:5000,
-image:'https://image2url.com/r2/default/images/1771081314416-a3bc164b-c3e0-4074-aff3-0f79b2454253.jpeg',
-transmission:'Manual',
-fuel:'Diesel',
-seats:5,
-features:['Manual Available','Panoramic Sunroof','Ventilated Seats','Bose Speakers']
-},
-
-/* ───────── BIKES ───────── */
-
-{
-id:'activa',
-name:'Activa 125',
-type:'bike',
-category:'Scooter',
-pricePerDay:500,
-deposit:1000,
-image:'https://image2url.com/r2/default/images/1771142393014-49d9578b-16b2-4e2e-b958-77fcbba93a25.jpeg',
-transmission:'Automatic',
-fuel:'Petrol',
-seats:2,
-features:['Comfortable Ride','Easy Handling','Great Mileage','Under-seat Storage']
-},
-
-{
-id:'fasino',
-name:'Yamaha Fasino',
-type:'bike',
-category:'Scooter',
-pricePerDay:600,
-deposit:1000,
-image:'https://image2url.com/r2/default/images/1771141146471-5eb9de67-def0-4725-890d-4e4dbeae6b9e.jpeg',
-transmission:'Automatic',
-fuel:'Petrol',
-seats:2,
-features:['Comfortable Ride','Easy Handling','Great Mileage','Under-seat Storage']
-}
-
+  // ── CARS: Manual & Automatic ──
+  {
+    id: 'baleno', name: 'Maruti Baleno', type: 'car', category: 'Luxury Hatchback', pricePerDay: 1300, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771081605318-cf7ecfe1-543f-4a35-8672-53cdda6ce892.jpeg',
+    transmission: 'Manual', fuel: 'Petrol', seats: 5, features: ['Manual Available', 'Spacious Cabin', '360 Camera', 'Cruise Control']
+  },
+  {
+    id: 'baleno', name: 'Maruti Baleno', type: 'car', category: 'Luxury Hatchback', pricePerDay: 1500, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771081605318-cf7ecfe1-543f-4a35-8672-53cdda6ce892.jpeg',
+    transmission: 'Automatic', fuel: 'Petrol', seats: 5, features: ['Auto Available', 'Spacious Cabin', '360 Camera', 'Cruise Control']
+  },
+  {
+    id: 'swift', name: 'Maruti Swift', type: 'car', category: 'Premium Hatchback', pricePerDay: 1500, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771086979849-965ca50c-72cc-4015-a047-c020fa50af0d.jpeg',
+    transmission: 'Automatic', fuel: 'Petrol', seats: 5, features: ['Auto Available', 'Sporty Drive', 'Keyless Entry', 'Bluetooth']
+  },
+  {
+    id: 'swift', name: 'Maruti Swift', type: 'car', category: 'Premium Hatchback', pricePerDay: 1200, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771086979849-965ca50c-72cc-4015-a047-c020fa50af0d.jpeg',
+    transmission: 'Manual', fuel: 'Petrol', seats: 5, features: ['Manual Available', 'Sporty Drive', 'Keyless Entry', 'Bluetooth']
+  },
+  {
+    id: 'i20', name: 'Hyundai i20', type: 'car', category: 'Luxury Hatchback', pricePerDay: 1600, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771084107396-de073f29-76b3-4b8d-9009-be3059a77fba.jpeg',
+    transmission: 'Automatic', fuel: 'Petrol', seats: 5, features: ['Auto Available', 'Sunroof', 'Premium Audio', 'Air Purifier']
+  },
+  {
+    id: 'i20', name: 'Hyundai i20', type: 'car', category: 'Luxury Hatchback', pricePerDay: 1200, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771085775326-5bfe945e-d68a-4474-8584-e0faa4d08a1a.jpeg',
+    transmission: 'Manual', fuel: 'Petrol', seats: 5, features: ['Manual Available', 'Sunroof', 'Premium Audio', 'Air Purifier']
+  },
+  {
+    id: 'ignis', name: 'Maruti Ignis', type: 'car', category: 'Compact Hatchback', pricePerDay: 1400, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771085514586-f48442cc-255d-424b-8a86-bd933470a02e.jpeg',
+    transmission: 'Automatic', fuel: 'Petrol', seats: 5, features: ['Auto Available', 'Compact Design', 'Touchscreen', 'Reverse Sensors']
+  },
+  {
+    id: 'ignis', name: 'Maruti Ignis', type: 'car', category: 'Compact Hatchback', pricePerDay: 1200, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771085703961-71ea43b9-14f6-452a-a93d-1d8b86afdd50.jpeg',
+    transmission: 'Manual', fuel: 'Petrol', seats: 5, features: ['Manual Available', 'Compact Design', 'Touchscreen', 'Reverse Sensors']
+  },
+  {
+    id: 'mercedes_c300', name: 'Mercedes-Benz C300', type: 'car', category: 'Luxury Sedan', pricePerDay: 20000, deposit: 10000,
+    image: 'https://image2url.com/r2/default/images/1771086392720-50bf550e-b4e3-4657-841c-8440eb5f8994.jpeg',
+    transmission: 'Automatic', fuel: 'Petrol', seats: 5, features: ['Luxury Convertible', 'Sunroof', 'Dual-Zone AC', 'Premium Sound']
+  },
+  {
+    id: 'brezza', name: 'Maruti Brezza', type: 'car', category: 'Compact SUV', pricePerDay: 2000, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771080613820-4e08e3eb-6cf3-456d-af67-d620cf20afa2.jpeg',
+    transmission: 'Manual', fuel: 'Petrol', seats: 5, features: ['Manual Available', 'Sunroof', 'High Ground Clearance', 'Smart Hybrid']
+  },
+  {
+    id: 'brezza', name: 'Maruti Brezza', type: 'car', category: 'Compact SUV', pricePerDay: 2500, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771080613820-4e08e3eb-6cf3-456d-af67-d620cf20afa2.jpeg',
+    transmission: 'Automatic', fuel: 'Petrol', seats: 5, features: ['Auto Available', 'Sunroof', 'High Ground Clearance', 'Smart Hybrid']
+  },
+  {
+    id: 'creta', name: 'Hyundai Creta', type: 'car', category: 'Premium SUV', pricePerDay: 3500, deposit: 5000,
+    image: 'https://image2url.com/r2/default/images/1771082168034-3cea15fd-961e-441b-827a-e772f7a0db43.png',
+    transmission: 'Automatic', fuel: 'Diesel', seats: 5, features: ['Auto Available', 'Panoramic Sunroof', 'Ventilated Seats', 'Bose Speakers']
+  },
+  {
+    id: 'creta', name: 'Hyundai Creta', type: 'car', category: 'Premium SUV', pricePerDay: 3000, deposit: 5000,
+    image: 'https://image2url.com/r2/default/images/1771081314416-a3bc164b-c3e0-4074-aff3-0f79b2454253.jpeg',
+    transmission: 'Manual', fuel: 'Diesel', seats: 5, features: ['Manual Available', 'Panoramic Sunroof', 'Ventilated Seats', 'Bose Speakers']
+  },
+  {
+    id: 'ertiga', name: 'Maruti Ertiga', type: 'car', category: 'SUV / 7 Seater', pricePerDay: 2300, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771083423558-6d9933ca-f849-46ea-8f35-24715d02f016.jpeg',
+    transmission: 'Manual', fuel: 'Petrol', seats: 7, features: ['Manual Available', 'Perfect for Families', 'Rear AC Vents', 'Flexible Seating']
+  },
+  {
+    id: 'ertiga', name: 'Maruti Ertiga', type: 'car', category: 'SUV / 7 Seater', pricePerDay: 2800, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771083423558-6d9933ca-f849-46ea-8f35-24715d02f016.jpeg',
+    transmission: 'Automatic', fuel: 'Petrol', seats: 7, features: ['Auto Available', 'Perfect for Families', 'Rear AC Vents', 'Flexible Seating']
+  },
+  {
+    id: 'carens', name: 'Kia Carens', type: 'car', category: 'Premium SUV', pricePerDay: 3200, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771086756653-26b04aeb-abcb-4bab-bf85-f14a576e0015.jpeg',
+    transmission: 'Automatic', fuel: 'Diesel', seats: 7, features: ['Auto Available', '6 Airbags', 'Ambient Lighting', 'Smart Storage']
+  },
+  {
+    id: 'carens', name: 'Kia Carens', type: 'car', category: 'Premium SUV', pricePerDay: 3000, deposit: 3000,
+    image: 'https://image2url.com/r2/default/images/1771086756653-26b04aeb-abcb-4bab-bf85-f14a576e0015.jpeg',
+    transmission: 'Manual', fuel: 'Diesel', seats: 7, features: ['Manual Available', '6 Airbags', 'Ambient Lighting', 'Smart Storage']
+  },
+  {
+    id: 'crysta', name: 'Toyota Innova Crysta', type: 'car', category: 'Luxury SUV', pricePerDay: 3000, deposit: 5000,
+    image: 'https://image2url.com/r2/default/images/1771082409934-b12afb7d-7dfd-42d5-a583-c6b96ae3b097.jpeg',
+    transmission: 'Manual', fuel: 'Diesel', seats: 7, features: ['Manual Available', 'Maximum Comfort', 'Legendary Reliability', 'Premium Leather']
+  },
+  {
+    id: 'crysta', name: 'Toyota Innova Crysta', type: 'car', category: 'Luxury SUV', pricePerDay: 3500, deposit: 5000,
+    image: 'https://image2url.com/r2/default/images/1771082409934-b12afb7d-7dfd-42d5-a583-c6b96ae3b097.jpeg',
+    transmission: 'Automatic', fuel: 'Diesel', seats: 7, features: ['Auto Available', 'Maximum Comfort', 'Legendary Reliability', 'Premium Leather']
+  },
+  {
+    id: 'thar-ht', name: 'Mahindra Thar Hardtop', type: 'car', category: 'Adventure SUV', pricePerDay: 3500, deposit: 5000,
+    image: 'https://image2url.com/r2/default/images/1771085007230-e3056cd4-758f-43a1-857c-024057a6fdd5.jpeg',
+    transmission: 'Automatic', fuel: 'Diesel', seats: 4, features: ['Auto Available', '4x4 Drivetrain', 'Rugged Build', 'Touchscreen']
+  },
+  {
+    id: 'thar-conv', name: 'Mahindra Thar Soft Top', type: 'car', category: 'Adventure SUV', pricePerDay: 3000, deposit: 5000,
+    image: 'https://image2url.com/r2/default/images/1771081798127-60ce84f8-d742-4139-a67d-a559e1a46960.png',
+    transmission: 'Manual', fuel: 'Petrol', seats: 4, features: ['Manual Available', 'Convertible Top', 'Iconic Style', 'All Terrain Tires']
+  },
+  {
+    id: 'thar-conv', name: 'Mahindra Thar Soft Top', type: 'car', category: 'Adventure SUV', pricePerDay: 3500, deposit: 5000,
+    image: 'https://image2url.com/r2/default/images/1771081798127-60ce84f8-d742-4139-a67d-a559e1a46960.png',
+    transmission: 'Automatic', fuel: 'Petrol', seats: 4, features: ['Auto Available', 'Convertible Top', 'Iconic Style', 'All Terrain Tires']
+  },
+  // ── CARS: Automatic Only ──
+  {
+    id: 'thar-roxx', name: 'Mahindra Thar Roxx', type: 'car', category: 'Premium 4x4 SUV', pricePerDay: 7000, deposit: 5000,
+    image: 'https://image2url.com/r2/default/images/1771084019004-13492275-dca8-4f5a-b2e5-e1527576fe03.jpg',
+    transmission: 'Automatic Only', fuel: 'Diesel', seats: 5, features: ['Automatic Only', 'Premium Interiors', 'Powerful Engine', 'Advanced Safety']
+  },
+  {
+    id: 'fortuner', name: 'Toyota Fortuner', type: 'car', category: 'Luxury SUV', pricePerDay: 9000, deposit: 5000,
+    image: 'https://image2url.com/r2/default/images/1771085163103-0cfc8bf6-b170-4f60-9be3-068e68b08592.jpeg',
+    transmission: 'Automatic Only', fuel: 'Diesel', seats: 7, features: ['Automatic Only', 'Road Dominance', '4x4 Capability', 'VIP Presence']
+  },
+  {
+    id: 'hycross', name: 'Toyota Innova Hycross', type: 'car', category: 'Luxury Hybrid SUV', pricePerDay: 3500, deposit: 5000,
+    image: 'https://image2url.com/r2/default/images/1771086867555-f1b998ba-9d26-4c0e-b1c8-d55ddb7e33b8.jpeg',
+    transmission: 'Automatic Only', fuel: 'Petrol Hybrid', seats: 7, features: ['Automatic Only', 'Hybrid Efficiency', 'Ottoman Seats', 'ADAS Tech']
+  },
+  {
+    id: 'audi-a3', name: 'Audi A3', type: 'car', category: 'Luxury Sedan', pricePerDay: 25000, deposit: 10000,
+    image: 'https://image2url.com/r2/default/images/1771083007149-3d15f250-cca7-40dd-ba7e-8b3b78a2dbd2.jpeg',
+    transmission: 'Automatic Only', fuel: 'Petrol', seats: 5, features: ['Automatic Only', 'German Engineering', 'Matrix LED', 'Virtual Cockpit']
+  },
+  {
+    id: 'mini-cooper', name: 'Mini Cooper', type: 'car', category: 'Luxury Icon', pricePerDay: 25000, deposit: 10000,
+    image: 'https://image2url.com/r2/default/images/1771083165899-7695a97a-57e7-4cf7-98c7-9f88cc0a2dbe.jpeg',
+    transmission: 'Automatic Only', fuel: 'Petrol', seats: 4, features: ['Automatic Only', 'Go-Kart Handling', 'British Icon', 'Premium Style']
+  },
+  // ── BIKES ──
+  {
+    id: 'activa', name: 'Activa 125', type: 'bike', category: 'Scooter', pricePerDay: 500, deposit: 1000,
+    image: 'https://image2url.com/r2/default/images/1771142393014-49d9578b-16b2-4e2e-b958-77fcbba93a25.jpeg',
+    transmission: 'Automatic', fuel: 'Petrol', seats: 2, features: ['Comfortable Ride', 'Easy Handling', 'Great Mileage', 'Under-seat Storage']
+  },
+  {
+    id: 'fasino', name: 'Yamaha Fasino', type: 'bike', category: 'Scooter', pricePerDay: 600, deposit: 1000,
+    image: 'https://image2url.com/r2/default/images/1771141146471-5eb9de67-def0-4725-890d-4e4dbeae6b9e.jpeg',
+    transmission: 'Automatic', fuel: 'Petrol', seats: 2, features: ['Comfortable Ride', 'Easy Handling', 'Great Mileage', 'Under-seat Storage']
+  },
+  {
+    id: 'hunter', name: 'Royal Enfield Hunter 350', type: 'bike', category: 'Cruiser', pricePerDay: 2000, deposit: 2000,
+    image: 'https://images.unsplash.com/photo-1689599943500-0f73b9e5b78b?q=80&w=800&auto=format&fit=crop',
+    transmission: 'Manual', fuel: 'Petrol', seats: 2, features: ['Agile Handling', 'Modern Retro', 'Punchy Engine', 'Comfort Seating']
+  },
+  {
+    id: 'bullet', name: 'Royal Enfield Bullet 350', type: 'bike', category: 'Classic Cruiser', pricePerDay: 2000, deposit: 2000,
+    image: 'https://images.unsplash.com/photo-1655179552613-4532b003cd50?q=80&w=800&auto=format&fit=crop',
+    transmission: 'Manual', fuel: 'Petrol', seats: 2, features: ['Iconic Thump', 'Vintage Design', 'Heavy Presence', 'Built for Roads']
+  }
 ];
 
 // ══════════════════════════════════════════════
