@@ -685,4 +685,43 @@ Please confirm availability.`;
 }
 
 
+// ── TRACKING SYSTEM ──
+
+// Tracking utility function
+function sendTrackingEvent(endpoint) {
+  fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      page: window.location.pathname,
+      time: new Date().toISOString(),
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {
+    // Fail silently if API is unavailable
+  });
+}
+
+// Initialize tracking on page load
+document.addEventListener("DOMContentLoaded", () => {
+  // Send page visit tracking
+  sendTrackingEvent("/api/visit");
+
+  // Add tracking to call buttons
+  document.querySelectorAll('a[href^="tel:"]').forEach(btn => {
+    btn.addEventListener("click", () => {
+      sendTrackingEvent("/api/call");
+    });
+  });
+
+  // Add tracking to WhatsApp buttons
+  document.querySelectorAll('a[href*="wa.me"]').forEach(btn => {
+    btn.addEventListener("click", () => {
+      sendTrackingEvent("/api/whatsapp");
+    });
+  });
+});
+
 console.log('RoyalGoaRide Cinematic v3.0 — Loaded');
