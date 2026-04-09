@@ -47,8 +47,6 @@
 /blog/self-drive-tips-goa.html /blog/self-drive-tips-goa 301!
 /blog/self-drive-vs-taxi.html /blog/self-drive-vs-taxi 301!
 
-# Remove trailing slashes (must be near end)
-/*/ /:splat 301!
 
 # 404 fallback (MUST BE LAST!)
 /* /404.html 404
