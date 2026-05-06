@@ -1,6 +1,7 @@
 /**
  * RoyalGoaRide — Cinematic Futuristic Redesign
- * main.js — All interactivity, animations, data rendering
+ * main2.js — All interactivity, animations, data rendering
+ * FIXED: Loader ID mismatch (loading-screen → loader) and class mismatch (hidden → out)
  */
 
 // ══════════════════════════════════════════════
@@ -196,7 +197,7 @@ const trips = [
     duration: '1 Day',
     image: 'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?auto=format&fit=crop&q=80&w=800',
     route: 'Margao → Colva → Benaulim → Palolem → Agonda',
-    desc: 'Quieter, more serene south beaches with pristine sands and laid-back vibes. Palolem beach is one of India\'s most beautiful.',
+    desc: "Quieter, more serene south beaches with pristine sands and laid-back vibes. Palolem beach is one of India's most beautiful.",
     tags: ['Serene', 'Nature', 'Beaches', 'Relaxation'],
     carRec: 'Best in: Maruti Brezza / Creta (Comfort + Ground Clearance)'
   },
@@ -223,7 +224,7 @@ const trips = [
     duration: '4 Hours',
     image: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&q=80&w=800',
     route: 'Margao → Fort Aguada → Sinquerim → Candolim',
-    desc: 'The golden hour drive along Goa\'s coastline, ending at the iconic Fort Aguada for a breathtaking sunset over the Arabian Sea.',
+    desc: "The golden hour drive along Goa's coastline, ending at the iconic Fort Aguada for a breathtaking sunset over the Arabian Sea.",
     tags: ['Sunset', 'Fort', 'Coastal', 'Photography'],
     carRec: 'Best in: Mini Cooper / Audi (Feel the Breeze in Style)'
   }
@@ -242,44 +243,76 @@ let filteredVehicles = [];
 // ══════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
+  // ── FIX 1: initLoadingScreen must run first, before anything else ──
   initLoadingScreen();
   initNavbar();
-  initParticles();
-  initCounters();
-  initFleet('car');
+  renderFleet();
   initTrips();
-  initTimeline();
   initFAQ();
   initScrollAnimations();
 });
 
-// ── LOADING SCREEN ──
+// ══════════════════════════════════════════════
+// ── LOADING SCREEN (FIXED) ──
+// FIXES APPLIED:
+//   • Was: document.getElementById('loading-screen')  → Now: 'loader'   (matches HTML id="loader")
+//   • Was: screen.classList.add('hidden')              → Now: 'out'      (matches CSS #loader.out)
+//   • Added window.onload double-safety fallback
+//   • Added hard-cap timeout (4s) so loader ALWAYS disappears
+// ══════════════════════════════════════════════
 function initLoadingScreen() {
-  const screen = document.getElementById('loading-screen');
-  if (!screen) return;
+  // FIXED: correct ID — HTML uses id="loader", old code used id="loading-screen"
+  const loader = document.getElementById('loader');
+
+  // Fallback: if element missing for any reason, do nothing and let page show
+  if (!loader) return;
+
+  // Helper that adds the correct CSS hide class
+  function hideLoader() {
+    // FIXED: correct class — CSS uses #loader.out, old code added .hidden
+    loader.classList.add('out');
+
+    // After the CSS transition completes (0.8s per CSS), fully remove from flow
+    setTimeout(() => {
+      loader.style.display = 'none';
+    }, 900);
+  }
+
+  // Primary trigger: hide after 1.6 s (matches the loading bar animation duration)
+  const primaryTimer = setTimeout(hideLoader, 1600);
+
+  // Safety net 1: hide as soon as all resources finish loading
+  window.addEventListener('load', () => {
+    clearTimeout(primaryTimer);
+    hideLoader();
+  }, { once: true });
+
+  // Safety net 2: hard cap — loader ALWAYS gone within 4 seconds no matter what
   setTimeout(() => {
-    screen.classList.add('hidden');
-  }, 1600);
+    if (!loader.classList.contains('out')) {
+      hideLoader();
+    }
+  }, 4000);
 }
 
 // ── NAVBAR ──
 function initNavbar() {
-  const navbar = document.getElementById('navbar');
-  const hamburger = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobile-menu');
+  // FIXED: correct IDs matching HTML — was 'hamburger'/'mobile-menu', now 'burger'/'nav-mob'
+  const navbar  = document.getElementById('nav');
+  const burger  = document.getElementById('burger');
+  const navMob  = document.getElementById('nav-mob');
+
+  if (!navbar) return;
 
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 60) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-  });
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
 
-  if (hamburger) {
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('open');
-      mobileMenu.classList.toggle('open');
+  if (burger && navMob) {
+    burger.addEventListener('click', () => {
+      const isOpen = navMob.classList.toggle('open');
+      burger.classList.toggle('open', isOpen);
+      burger.setAttribute('aria-expanded', isOpen);
     });
   }
 
@@ -295,94 +328,46 @@ function initNavbar() {
   });
 }
 
-window.closeMobileMenu = function () {
-  const hamburger = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobile-menu');
-  if (hamburger) hamburger.classList.remove('open');
-  if (mobileMenu) mobileMenu.classList.remove('open');
+// FIXED: correct IDs for close-mobile helpers
+window.closeMob = function () {
+  const burger = document.getElementById('burger');
+  const navMob = document.getElementById('nav-mob');
+  if (burger) burger.classList.remove('open');
+  if (navMob) navMob.classList.remove('open');
 };
 
-// ── PARTICLES ──
-function initParticles() {
-  const container = document.getElementById('hero-particles');
-  if (!container) return;
-  const count = window.innerWidth < 768 ? 20 : 40;
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement('div');
-    p.className = 'hero-particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.width = (Math.random() * 2 + 1) + 'px';
-    p.style.height = p.style.width;
-    const dur = (Math.random() * 8 + 6) + 's';
-    const delay = (Math.random() * 8) + 's';
-    p.style.animationDuration = dur;
-    p.style.animationDelay = delay;
-    p.style.opacity = Math.random() * 0.6 + 0.2;
-    container.appendChild(p);
-  }
-}
+// Legacy shim kept for any leftover inline onclick="closeMobileMenu()" calls
+window.closeMobileMenu = window.closeMob;
 
-// ── COUNTER ANIMATION ──
-function initCounters() {
-  const counters = document.querySelectorAll('.stat-num');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        animateCounter(entry.target);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.5 });
-  counters.forEach(c => observer.observe(c));
-}
+// ══════════════════════════════════════════════
+// ── FLEET RENDERING ──
+// ══════════════════════════════════════════════
 
-function animateCounter(el) {
-  const target = parseInt(el.dataset.target) || 0;
-  const duration = 1800;
-  const start = performance.now();
-  function step(now) {
-    const progress = Math.min((now - start) / duration, 1);
-    const ease = 1 - Math.pow(1 - progress, 3);
-    el.textContent = Math.floor(ease * target);
-    if (progress < 1) requestAnimationFrame(step);
-    else el.textContent = target;
-  }
-  requestAnimationFrame(step);
-}
-
-// ── FLEET ──
-function initFleet(type = "car") {
-  if (type === "bike") {
-    filteredVehicles = vehicles.filter(v => v.type === "bike");
-  } else {
-    filteredVehicles = vehicles.filter(v => v.type === "car");
-  }
-  renderFleetCards();
-}
-
-window.filterFleet = function (filter, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentFleetFilter = filter;
-  fleetOffset = 0;
-
+function renderFleet(filter = 'all') {
   if (filter === 'all') {
     filteredVehicles = [...vehicles];
+  } else if (filter === 'car') {
+    filteredVehicles = vehicles.filter(v => v.type === 'car');
+  } else if (filter === 'bike') {
+    filteredVehicles = vehicles.filter(v => v.type === 'bike');
   } else if (filter === 'luxury') {
     filteredVehicles = vehicles.filter(v => v.pricePerDay >= 5000);
   } else if (filter === 'automatic') {
     filteredVehicles = vehicles.filter(v => v.transmission.toLowerCase().includes('auto'));
-  } else {
-    filteredVehicles = vehicles.filter(v => v.type === filter);
+  } else if (filter === 'suv') {
+    filteredVehicles = vehicles.filter(v =>
+      v.category.toLowerCase().includes('suv') || v.category.toLowerCase().includes('4x4')
+    );
   }
   renderFleetCards();
-};
+}
 
+// FIXED: correct container ID — HTML uses id="fleet-grid", old code used id="fleet-carousel"
 function renderFleetCards() {
-  const container = document.getElementById('fleet-carousel');
+  const container = document.getElementById('fleet-grid');
   if (!container) return;
 
-  // Group vehicles by name so Auto+Manual appear on ONE card
+  // Group vehicles by name so Auto + Manual appear on ONE card
   const grouped = {};
   filteredVehicles.forEach(v => {
     const key = v.id + '_' + v.name.trim();
@@ -394,7 +379,7 @@ function renderFleetCards() {
 
   const cards = Object.values(grouped);
 
-  container.innerHTML = cards.map((v, i) => {
+  container.innerHTML = cards.map((v) => {
     // Sort: Automatic first
     const variants = v.variants.sort((a, b) => {
       const aAuto = a.transmission.toLowerCase().includes('auto');
@@ -402,128 +387,89 @@ function renderFleetCards() {
       return bAuto - aAuto;
     });
 
-    const hasAuto = variants.find(vv => vv.transmission.toLowerCase().includes('auto'));
-    const hasManual = variants.find(vv => !vv.transmission.toLowerCase().includes('auto') || vv.transmission.toLowerCase() === 'manual');
+    const hasAuto   = variants.find(vv => vv.transmission.toLowerCase().includes('auto'));
+    const hasManual = variants.find(vv =>
+      !vv.transmission.toLowerCase().includes('auto') || vv.transmission.toLowerCase() === 'manual'
+    );
 
-    // calculate minimum price for badge
-    const minPrice = variants.reduce((min, v) => v.price < min ? v.price : min, variants[0].price);
+    const minPrice = variants.reduce((min, vv) => vv.price < min ? vv.price : min, variants[0].price);
 
-    // ── Price boxes ──
+    // ── Price buttons ──
     let priceBoxesHTML = '';
-    let onlyNoteHTML = '';
+    let onlyNoteHTML   = '';
 
     if (hasAuto && hasManual) {
       priceBoxesHTML = `
-        <div class="price-row">
-          <button class="price-btn auto" onclick="sendBookingWA('${v.type}','${v.name}','Automatic',${hasAuto.price},${v.deposit})">
-            ⚙ Automatic ₹${hasAuto.price.toLocaleString('en-IN')}
+        <div class="vc2-prices two">
+          <button class="price-btn2" onclick="sendBookingWA('${v.type}','${v.name}','Automatic',${hasAuto.price},${v.deposit})">
+            <span class="tr-label">⚙ Automatic</span>
+            <span class="tr-amt">₹${hasAuto.price.toLocaleString('en-IN')}</span>
           </button>
-          <button class="price-btn manual" onclick="sendBookingWA('${v.type}','${v.name}','Manual',${hasManual.price},${v.deposit})">
-            ⚙ Manual ₹${hasManual.price.toLocaleString('en-IN')}
+          <button class="price-btn2" onclick="sendBookingWA('${v.type}','${v.name}','Manual',${hasManual.price},${v.deposit})">
+            <span class="tr-label">⚙ Manual</span>
+            <span class="tr-amt">₹${hasManual.price.toLocaleString('en-IN')}</span>
           </button>
         </div>`;
     } else if (hasAuto) {
       priceBoxesHTML = `
-        <div class="price-row">
-          <button class="price-btn auto" onclick="sendBookingWA('${v.type}','${v.name}','Automatic',${hasAuto.price},${v.deposit})">
-            ⚙ Automatic ₹${hasAuto.price.toLocaleString('en-IN')}
+        <div class="vc2-prices">
+          <button class="price-btn2" onclick="sendBookingWA('${v.type}','${v.name}','Automatic',${hasAuto.price},${v.deposit})">
+            <span class="tr-label">⚙ Automatic</span>
+            <span class="tr-amt">₹${hasAuto.price.toLocaleString('en-IN')}</span>
           </button>
         </div>`;
-      onlyNoteHTML = `<div class="vc-only-note">Automatic only</div>`;
-    } else {
+      onlyNoteHTML = `<div class="vc2-fuel-note" style="color:var(--gold);opacity:0.7">Automatic only</div>`;
+    } else if (hasManual) {
       priceBoxesHTML = `
-        <div class="price-row">
-          <button class="price-btn manual" onclick="sendBookingWA('${v.type}','${v.name}','Manual',${hasManual.price},${v.deposit})">
-            ⚙ Manual ₹${hasManual.price.toLocaleString('en-IN')}
+        <div class="vc2-prices">
+          <button class="price-btn2" onclick="sendBookingWA('${v.type}','${v.name}','Manual',${hasManual.price},${v.deposit})">
+            <span class="tr-label">⚙ Manual</span>
+            <span class="tr-amt">₹${hasManual.price.toLocaleString('en-IN')}</span>
           </button>
         </div>`;
-      onlyNoteHTML = `<div class="vc-only-note">Manual only</div>`;
+      onlyNoteHTML = `<div class="vc2-fuel-note" style="color:var(--gold);opacity:0.7">Manual only</div>`;
     }
-
-    // ── WhatsApp message builder per variant ──
-    function buildWAMsg(vehicleType, name, transmission, price, deposit) {
-      if (vehicleType === "car") {
-        return encodeURIComponent(
-          `🚗 *Vehicle Booking Inquiry - RoyalGoaRide*
-
-Hello Team 👋,
-Car: ${name}
-Transmission: ${transmission}
-Price: ₹${price.toLocaleString('en-IN')} per day
-Pickup Date:
-Return Date:
-
-🔥 Only 5 Cars Left Today
-⭐ Real customer reviews available
-🚗 Airport pickup available
-
-Please share availability and next steps. Thank you!`
-        );
-      }
-
-      if (vehicleType === "bike") {
-        return encodeURIComponent(
-          `🏍️ *Bike Booking Inquiry - RoyalGoaRide*
-
-Hello Team 👋, I'm interested in booking:
-
-🏍️ *Bike:* ${name}
-⚙️ *Transmission:* ${transmission}
-💰 *Price:* ₹${price.toLocaleString('en-IN')}/day
-🔒 *Refundable Deposit:* ₹${deposit.toLocaleString('en-IN')}
-
-Please confirm:
-✅ Availability
-📍 Pickup location
-📄 Required documents
-💳 Helmet & deposit info
-
-🌴 Excited for Goa ride! 🏖️`
-        );
-      }
-    }
-
-
 
     return `
-    <div class="vc" data-index="${i}">
-      <div class="vc-img-wrap">
-        <div class="vc-price-badge">₹${minPrice.toLocaleString('en-IN')}</div>
-        <img src="${v.image}" alt="${v.name}" loading="lazy"
+    <div class="vc2" role="listitem">
+      <div class="vc2-img">
+        <span class="vc2-badge">₹${minPrice.toLocaleString('en-IN')}/day</span>
+        <img src="${v.image}" alt="${v.name} self drive rental Goa" loading="lazy"
           onerror="this.src='https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=800'">
-        <div class="vc-img-grad"></div>
-        <span class="vc-cat">${v.category}</span>
-        <div class="vc-deposit-badge">
-          <span class="vc-deposit-badge-label">Deposit</span>
-          <span class="vc-deposit-badge-amount">₹${v.deposit.toLocaleString('en-IN')}</span>
+        <div class="vc2-deposit">
+          <span class="vc2-deposit-lbl">Deposit</span>
+          <span class="vc2-deposit-amt">₹${v.deposit.toLocaleString('en-IN')}</span>
         </div>
       </div>
-      <div class="vc-body">
-        <div class="vc-name">${v.name}</div>
-        <div class="vc-specs">
+      <div class="vc2-body">
+        <div class="vc2-name">${v.name}</div>
+        <div class="vc2-specs">
           <span><i class="bi bi-fuel-pump-fill"></i> ${v.fuel}</span>
           <span><i class="bi bi-people-fill"></i> ${v.seats} Seats</span>
         </div>
         ${priceBoxesHTML}
         ${onlyNoteHTML}
-        <div class="vc-fuel-note">* Per day price excludes fuel</div>
+        <div class="vc2-fuel-note">* Per day price excludes fuel</div>
       </div>
-      <div class="vc-btns">
-        <a href="tel:+919975356697" class="vc-btn-call-full">
-          <i class="bi bi-telephone-fill"></i> CALL
+      <div class="vc2-footer">
+        <a href="tel:+919975356697" class="vc2-call" onclick="gConv && gConv('CALL_EVENT')">
+          <i class="bi bi-telephone-fill"></i> Call to Book
         </a>
       </div>
     </div>`;
   }).join('');
-
-  // done
 }
 
-window.bookVehicleWA = function (name, price, deposit) {
-  const dep = deposit ? ` | Deposit: ₹${deposit.toLocaleString('en-IN')}` : '';
-  const msg = encodeURIComponent(`Hi, I want to book: ${name} — ₹${price.toLocaleString('en-IN')}/day${dep}. Please confirm availability and dates.`);
-  window.open(`https://wa.me/919975356697?text=${msg}`, '_blank');
+// FIXED: correct filter function name — HTML calls filter2(), old code only exported filterFleet()
+window.filter2 = function (filter, btn) {
+  document.querySelectorAll('.flt-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  currentFleetFilter = filter;
+  renderFleet(filter);
 };
+
+// Legacy shim
+window.filterFleet = window.filter2;
 
 // ── TRIPS ──
 function initTrips() {
@@ -531,70 +477,40 @@ function initTrips() {
   if (!grid) return;
 
   grid.innerHTML = trips.map((t, i) => `
-    <div class="trip-card" style="animation-delay:${i * 0.1}s">
-      <div class="trip-img">
-        <img src="${t.image}" alt="${t.title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=800'">
-        <div class="trip-img-overlay"></div>
-        <span class="trip-duration">${t.duration}</span>
-        <span class="trip-label">${t.title}</span>
+    <div class="trip-card2" role="listitem" style="animation-delay:${i * 0.1}s">
+      <div class="trip-img2">
+        <img src="${t.image}" alt="${t.title}" loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&q=80&w=800'">
+        <span class="trip-dur">${t.duration}</span>
       </div>
-      <div class="trip-body">
-        <div class="trip-route"><i class="bi bi-geo-alt"></i> ${t.route}</div>
-        <p class="trip-desc">${t.desc}</p>
-        <div class="trip-tags">${t.tags.map(tag => `<span class="trip-tag">${tag}</span>`).join('')}</div>
-        <div class="trip-car-rec"><i class="bi bi-car-front"></i> ${t.carRec}</div>
+      <div class="trip-body2">
+        <div class="trip-name">${t.title}</div>
+        <div class="trip-route2"><i class="bi bi-geo-alt"></i> ${t.route}</div>
+        <p class="trip-desc2">${t.desc}</p>
+        <div class="trip-tags2">${t.tags.map(tag => `<span class="trip-tag2">${tag}</span>`).join('')}</div>
+        <div class="trip-rec2"><i class="bi bi-car-front"></i> ${t.carRec}</div>
       </div>
     </div>
   `).join('');
 }
 
-// ── TIMELINE ──
-function initTimeline() {
-  const steps = document.querySelectorAll('.timeline-step');
-  const progress = document.getElementById('timeline-progress');
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.3 });
-
-  steps.forEach((step, i) => {
-    step.style.transitionDelay = `${i * 0.15}s`;
-    observer.observe(step);
-  });
-
-  // Animate progress bar
-  if (progress) {
-    const sectionObserver = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setTimeout(() => { progress.style.height = '100%'; }, 300);
-      }
-    }, { threshold: 0.1 });
-    const section = document.getElementById('booking');
-    if (section) sectionObserver.observe(section);
-  }
-}
-
 // ── FAQ ──
-function initFAQ() {
-  // setup done via onclick in HTML
-}
+function initFAQ() { /* accordion driven by inline onclick="toggleFaq(this)" */ }
 
 window.toggleFaq = function (btn) {
   const answer = btn.nextElementSibling;
   const isOpen = btn.classList.contains('open');
 
-  // Close all
-  document.querySelectorAll('.faq-q.open').forEach(q => {
+  // Close all open items
+  document.querySelectorAll('.faq2-btn.open').forEach(q => {
     q.classList.remove('open');
+    q.setAttribute('aria-expanded', 'false');
     q.nextElementSibling.classList.remove('open');
   });
 
   if (!isOpen) {
     btn.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
     answer.classList.add('open');
   }
 };
@@ -602,7 +518,7 @@ window.toggleFaq = function (btn) {
 // ── SCROLL ANIMATIONS ──
 function initScrollAnimations() {
   const animateEls = document.querySelectorAll(
-    '.review-card, .trip-card, .contact-cta-block, .contact-info'
+    '.review-card2, .trip-card2, .contact-cta-panel, .contact-info2, .why-card, .vc2'
   );
 
   const observer = new IntersectionObserver((entries) => {
@@ -613,24 +529,66 @@ function initScrollAnimations() {
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.08 });
 
   animateEls.forEach((el, i) => {
     el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = `opacity 0.6s ease ${i * 0.08}s, transform 0.6s ease ${i * 0.08}s`;
+    el.style.transform = 'translateY(28px)';
+    el.style.transition = `opacity 0.55s ease ${Math.min(i * 0.06, 0.5)}s, transform 0.55s ease ${Math.min(i * 0.06, 0.5)}s`;
     observer.observe(el);
   });
 
-  // Parallax orbs on hero
+  // Subtle parallax on scroll
   window.addEventListener('scroll', () => {
     const scrolled = window.scrollY;
-    const orb1 = document.querySelector('.orb-1');
-    const orb2 = document.querySelector('.orb-2');
-    if (orb1) orb1.style.transform = `translateY(${scrolled * 0.15}px)`;
-    if (orb2) orb2.style.transform = `translateY(${scrolled * -0.1}px)`;
+    const heroBg = document.querySelector('.hero-bg');
+    if (heroBg) heroBg.style.transform = `scale(1.05) translateY(${scrolled * 0.08}px)`;
   }, { passive: true });
 }
+
+// ══════════════════════════════════════════════
+// ── WHATSAPP BOOKING ──
+// ══════════════════════════════════════════════
+
+function sendBookingWA(type, name, transmission, price, deposit) {
+  let msg = '';
+
+  if (type === 'car') {
+    msg =
+`🚗 *Vehicle Booking Inquiry - RoyalGoaRide*
+
+Car: ${name}
+Transmission: ${transmission}
+Price: ₹${price.toLocaleString('en-IN')}/day
+Deposit: ₹${deposit.toLocaleString('en-IN')} (refundable)
+
+Pickup Date:
+Return Date:
+Pickup Location:
+
+Please check availability & confirm booking. Thank you!`;
+  }
+
+  if (type === 'bike') {
+    msg =
+`🏍️ *Bike Booking Inquiry - RoyalGoaRide*
+
+Bike: ${name}
+Transmission: ${transmission}
+Price: ₹${price.toLocaleString('en-IN')}/day
+Deposit: ₹${deposit.toLocaleString('en-IN')} (refundable)
+
+Pickup Date:
+Return Date:
+Pickup Location:
+
+Please confirm availability. Thank you! 🌴`;
+  }
+
+  window.open('https://wa.me/919975356697?text=' + encodeURIComponent(msg), '_blank');
+}
+
+window.sendBookingWA = sendBookingWA;
 
 // ── GLOBAL HELPERS ──
 window.handleWhatsAppClick = function () {
@@ -641,87 +599,38 @@ window.handleCallClick = function () {
   window.location.href = 'tel:+919975356697';
 };
 
-// Legacy compatibility shims for any leftover inline calls
-window.navigateTo = function (page) {
-  const map = { home: '#hero', cars: '#fleet', bikes: '#fleet', booking: '#booking', contact: '#contact' };
-  const target = document.querySelector(map[page] || '#hero');
-  if (target) target.scrollIntoView({ behavior: 'smooth' });
+// Google Ads conversion (safe no-op if gtag not loaded)
+window.gConv = function (eventName) {
+  try {
+    if (typeof gtag === 'function') {
+      gtag('event', 'conversion', { send_to: 'AW-7510098927/' + eventName });
+    }
+  } catch (e) { /* fail silently */ }
 };
-
-window.toggleDarkMode = function () { };
-window.toggleMobileMenu = function () {
-  const hamburger = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobile-menu');
-  if (hamburger) hamburger.classList.toggle('open');
-  if (mobileMenu) mobileMenu.classList.toggle('open');
-};
-
-// ── SEND BOOKING MESSAGE ──
-function sendBookingWA(type, name, transmission, price, deposit) {
-  let msg = '';
-
-  if (type === 'car') {
-    msg = `🚗 *Vehicle Booking Inquiry - RoyalGoaRide*
-
-Car: ${name}
-Transmission: ${transmission}
-Price: ₹${price}/day
-Deposit: ₹${deposit}
-
-Please check availability & booking process.`;
-  }
-
-  if (type === 'bike') {
-    msg = `🏍️ *Bike Booking Inquiry - RoyalGoaRide*
-
-Bike: ${name}
-Price: ₹${price}/day
-Deposit: ₹${deposit}
-
-Please confirm availability.`;
-  }
-
-  window.open('https://wa.me/919975356697?text=' + encodeURIComponent(msg), '_blank');
-}
-
 
 // ── TRACKING SYSTEM ──
-
-// Tracking utility function
 function sendTrackingEvent(endpoint) {
   fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       page: window.location.pathname,
       time: new Date().toISOString(),
       userAgent: navigator.userAgent
     })
-  }).catch(() => {
-    // Fail silently if API is unavailable
-  });
+  }).catch(() => { /* fail silently */ });
 }
 
-// Initialize tracking on page load
-document.addEventListener("DOMContentLoaded", () => {
-  // Send page visit tracking
-  sendTrackingEvent("/api/visit");
+document.addEventListener('DOMContentLoaded', () => {
+  sendTrackingEvent('/api/visit');
 
-  // Add tracking to call buttons
   document.querySelectorAll('a[href^="tel:"]').forEach(btn => {
-    btn.addEventListener("click", () => {
-      sendTrackingEvent("/api/call");
-    });
+    btn.addEventListener('click', () => sendTrackingEvent('/api/call'));
   });
 
-  // Add tracking to WhatsApp buttons
   document.querySelectorAll('a[href*="wa.me"]').forEach(btn => {
-    btn.addEventListener("click", () => {
-      sendTrackingEvent("/api/whatsapp");
-    });
+    btn.addEventListener('click', () => sendTrackingEvent('/api/whatsapp'));
   });
 });
 
-console.log('RoyalGoaRide Cinematic v3.0 — Loaded');
+console.log('RoyalGoaRide v4.0 — Loaded & Fixed ✅');
